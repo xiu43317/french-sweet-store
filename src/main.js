@@ -19,6 +19,9 @@ configure({
   validateOnInput: true
 })
 
+router.afterEach((to, from, failure) => {
+  window.scrollTo(0, 0)
+})
 setLocale('zh_TW')
 
 const app = createApp(App)

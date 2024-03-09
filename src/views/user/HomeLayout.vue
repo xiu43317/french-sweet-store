@@ -21,11 +21,12 @@
         />
       </router-link>
       <a
-        class="nav-link order-md-1"
+        class="nav-link order-md-1 position-relative"
         data-bs-toggle="offcanvas"
         href="#offcanvasExample"
         role="button"
         aria-controls="offcanvasExample"
+        style="width: 40px; height: 40px;"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -39,6 +40,8 @@
             d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5M3.14 5l.5 2H5V5zM6 5v2h2V5zm3 0v2h2V5zm3 0v2h1.36l.5-2zm1.11 3H12v2h.61zM11 8H9v2h2zM8 8H6v2h2zM5 8H3.89l.5 2H5zm0 5a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0m9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0"
           />
         </svg>
+        <div class="rounded-circle bg-danger position-absolute start-100 translate-middle d-flex justify-content-center align-items-center"
+             style="width: 20px; height: 20px; top: 5px;" v-show="cart.carts.length"><span class="text-white">{{ cart.carts.length }}</span></div>
       </a>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav mx-auto h4 nav-underline text-center">
@@ -91,11 +94,14 @@
     </div>
     <div class="offcanvas-body">
       <div class="mb-2 d-flex justify-content-end">
-        <button class="btn btn-outline-success">清空購物車</button>
+        <button type="button" class="btn btn-outline-success" @click="deleteAllItems">清空購物車</button>
       </div>
+      <hr>
       <!-- 做成元件 -->
-      <CartItem/>
+      <CartItem v-for="item in cart.carts" :key="item.id" :cart="item" :isRemovable="removeItem"/>
       <!-- 做成元件 -->
+      <p class="h4 text-success" v-if="cart.final_total !== cart.total">折扣價：NT$ {{ cart.final_total }}</p>
+      <p class="h4" v-else>總計：NT$ {{ cart.total }}</p>
       <div class="check mt-3">
         <button type="button" class="btn btn-secondary w-100 fs-4"
         data-bs-dismiss="offcanvas"
@@ -105,21 +111,40 @@
   </div>
 </template>
 <script>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import CartItem from '@/components/CartItem.vue'
 import BottomBanner from '@/components/BottomBanner.vue'
+import { useCartStore } from '@/stores/cart'
+import { storeToRefs } from 'pinia'
+
 export default {
   components: { BottomBanner, CartItem },
   setup (props) {
+    const removeItem = ref(true)
+    const cartStore = useCartStore()
+    const { getCart, deleteAllCart } = cartStore
+    const { cart } = storeToRefs(cartStore)
     const router = useRouter()
     const msg = ref('Hello World')
     const goToCheck = () => {
       router.push('/check')
     }
+    const deleteAllItems = async () => {
+      await deleteAllCart()
+      await getCart()
+    }
+    onMounted(() => {
+      getCart()
+    })
     return {
+      removeItem,
+      deleteAllItems,
+      deleteAllCart,
+      cart,
       msg,
-      goToCheck
+      goToCheck,
+      getCart
     }
   }
 }

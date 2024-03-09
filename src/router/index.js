@@ -27,9 +27,19 @@ const routes = [
         component: () => import('../views/user/NewsPage.vue')
       },
       {
+        path: 'onenews/:id/num/:num',
+        name: 'onenews',
+        component: () => import('../views/user/NewsOnePage.vue')
+      },
+      {
         path: 'products',
         name: 'products',
         component: () => import('../views/user/ProductsPage.vue')
+      },
+      {
+        path: 'product/:id',
+        name: 'product',
+        component: () => import('../views/user/ProductPage.vue')
       },
       {
         path: 'notice',

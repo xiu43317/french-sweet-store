@@ -1,26 +1,36 @@
 <template>
-    <div class="position-relative col-12 col-lg-4 my-3">
-        <img :src="sonImgUrl" alt="" class="img-fluid object-fit-cover opacity-25">
-        <div class="position-absolute start-50 top-50 translate-middle text-center">
-            <h4 class="fs-2 fw-bold">{{ sonTitle }}</h4>
-            <h5 class="fs-5 mt-3 fw-bold">{{ sonSubTitle }}</h5>
+    <div class="col-12 col-lg-4 col-md-6 my-3">
+    <router-link :to="`/onenews/${oneNews.id}/num/${oneNews.num}`">
+      <div class="card position-relative h-100 zoom-in">
+        <div class="frame h-100">
+          <img :src="oneNews.imageUrl" alt="" class="img-fluid object-fit-cover opacity-25 h-100">
+          <div class="position-absolute start-50 top-50 translate-middle text-center">
+              <h4 class="fs-2 fw-bold">{{ oneNews.title }}</h4>
+              <h5 class="fs-5 mt-3 fw-bold">{{ oneNews.description }}</h5>
+          </div>
         </div>
+      </div>
+    </router-link>
     </div>
 </template>
 <style scoped>
-
+.zoom-in:hover .frame{
+  transform: scale(1.1);
+}
+.zoom-in .frame {
+  transition: 0.5s;
+}
+.zoom-in{
+  overflow: hidden;
+}
 </style>
 <script>
 export default {
-  props: ['imgUrl', 'title', 'subTitle'],
+  props: ['news'],
   setup (props) {
-    const sonImgUrl = props.imgUrl
-    const sonTitle = props.title
-    const sonSubTitle = props.subTitle
+    const oneNews = props.news
     return {
-      sonImgUrl,
-      sonTitle,
-      sonSubTitle
+      oneNews
     }
   }
 }

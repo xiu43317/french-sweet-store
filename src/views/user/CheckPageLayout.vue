@@ -1,11 +1,14 @@
 <template>
-  <FlowChart />
+  <FlowChart :outProgress="0"/>
   <div class="container my-4">
     <div class="my-5 row justify-content-center">
       <div class="col-lg-6">
         <h4 class="text-center">購物車資訊</h4>
+        <div class="mt-3 text-end">
+          <button type="button" class="btn btn-outline-success" @click="clearCart()">清空購物車</button>
+        </div>
         <hr />
-        <ProductOrderCard />
+        <ProductOrderCard v-for="item in cart.carts" :key="item.id" :cart="item"/>
         <div class="row">
           <div class="col-md-6 my-3">
             <div class="input-group my-auto">
@@ -21,13 +24,15 @@
                 class="btn btn-outline-success"
                 type="button"
                 id="button-addon2"
+                @click="useMyCoupon()"
               >
                 套用
               </button>
             </div>
           </div>
           <div class="col-md-6 my-3 d-flex flex-row-reverse align-items-center">
-            <span class="fs-4 fw-bold">總計：NT$ 400</span>
+            <span class="fs-4 fw-bold text-success" v-if="cart.final_total !== cart.total">折扣價：NT$ {{ cart.final_total }}</span>
+            <span class="fs-4 fw-bold" v-else>總計：NT$ {{ cart.total }}</span>
           </div>
         </div>
       </div>
@@ -109,12 +114,7 @@
             ></textarea>
           </div>
           <div class="text-end">
-            <button type="submit" class="btn btn-success" :disabled="isSending">
-              <font-awesome-icon
-                icon="spinner"
-                class="fa-spin"
-                v-show="isSending"
-              />
+            <button type="submit" class="btn btn-success">
               送出訂單
             </button>
           </div>
@@ -128,12 +128,47 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import FlowChart from '@/components/FlowChart.vue'
 import ProductOrderCard from '@/components/ProductOrderCard.vue'
+import { useCartStore } from '@/stores/cart.js'
+import { storeToRefs } from 'pinia'
+import api from '@/api/axios.js'
+
 export default {
   components: { FlowChart, ProductOrderCard },
   setup (props) {
+    const cartStore = useCartStore()
+    const { cart } = storeToRefs(cartStore)
+    const { getCart, deleteAllCart, useCoupon } = cartStore
+    const useMyCoupon = async () => {
+      const coupon = {
+        data: {
+          code: couponCode.value
+        }
+      }
+      await useCoupon(coupon)
+      await getCart()
+    }
+    const clearCart = async () => {
+      await deleteAllCart()
+      await getCart()
+    }
     const router = useRouter()
+    const couponCode = ref(null)
+    const message = ref('')
     const goToPayment = () => {
-      router.push('/payment')
+      const data = {
+        data: {
+          user: user.value,
+          message: message.value
+        }
+      }
+      api.sendOrder(data)
+        .then(async (res) => {
+          await getCart()
+          router.push(`/payment?id=${res.data.orderId}`)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
     }
     const user = ref({
       email: '',
@@ -141,18 +176,20 @@ export default {
       address: '',
       tel: ''
     })
-    const onSubmit = () => {
-      console.log('sned')
-    }
     const isPhone = (value) => {
       const phoneNumber = /^(09)[0-9]{8}$/
       return phoneNumber.test(value) ? true : '需要正確的電話號碼'
     }
     return {
-      onSubmit,
+      cart,
+      cartStore,
+      message,
+      couponCode,
       isPhone,
       user,
-      goToPayment
+      goToPayment,
+      clearCart,
+      useMyCoupon
     }
   }
 }

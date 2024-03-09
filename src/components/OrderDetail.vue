@@ -1,5 +1,5 @@
 <template>
-  <div class="container mt-5 mb-3" style="max-width: 800px">
+  <div class="container mt-5 mb-3" style="max-width: 800px" v-if="userOrder">
     <div class="mx-auto">
       <h3 class="text-center">訂單資訊</h3>
       <hr />
@@ -24,7 +24,7 @@
             data-bs-parent="#accordionExample"
           >
             <div class="accordion-body">
-              <CartItem />
+              <CartItem :isRemovable="false" :cart="item" v-for="item in userOrder.products" :key="item.id"/>
             </div>
           </div>
         </div>
@@ -34,45 +34,64 @@
       <tbody>
         <tr>
           <th width="100">訂單標號</th>
-          <td>acbjjiocwsv-56x</td>
+          <td>{{ userOrder.id }}</td>
         </tr>
         <tr>
           <th width="100">Email</th>
-          <td>abc@gmail</td>
+          <td>{{ userOrder.user.email }}</td>
         </tr>
         <tr>
           <th>姓名</th>
-          <td>王曉強</td>
+          <td>{{ userOrder.user.name }}</td>
         </tr>
         <tr>
           <th>收件人電話</th>
-          <td>0912345678</td>
+          <td>{{ userOrder.user.tel }}</td>
         </tr>
         <tr>
           <th>收件人地址</th>
-          <td>台中市和平路</td>
+          <td>{{ userOrder.user.address }}</td>
         </tr>
         <tr>
           <th width="100">訂單金額</th>
-          <td>NT$ 100</td>
+          <td>NT$ {{ userOrder.total }}</td>
         </tr>
         <tr>
           <th>付款狀態</th>
           <td>
-            <span>尚未付款</span>
-            <!-- <span v-if="!order.is_paid">尚未付款</span>
-            <span v-else class="text-success">付款完成</span> -->
+            <span v-if="!userOrder.is_paid">尚未付款</span>
+            <span v-else class="text-success">付款完成</span>
           </td>
         </tr>
       </tbody>
     </table>
-    <button class="btn btn-lg btn-secondary w-100">確認付款</button>
+    <button @click="payOrder" class="btn btn-lg btn-secondary w-100" v-if="!userOrder.is_paid">確認付款</button>
   </div>
 </template>
 <script>
 import CartItem from './CartItem.vue'
+import { ref, watch } from 'vue'
+
 export default {
+  emits: ['payOrder'],
   components: { CartItem },
-  setup (props) {}
+  props: ['order'],
+  setup (props, ctx) {
+    const removeItem = ref(false)
+    const userOrder = ref(null)
+    const payOrder = () => {
+      ctx.emit('payOrder')
+    }
+
+    watch(() => props.order, () => {
+      userOrder.value = props.order
+      console.log(userOrder.value)
+    })
+    return {
+      removeItem,
+      userOrder,
+      payOrder
+    }
+  }
 }
 </script>

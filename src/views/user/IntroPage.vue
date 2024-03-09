@@ -2,9 +2,9 @@
   <!-- Banner -->
   <div class="hero-image">
     <div class="hero-text">
-      <h1>I am John Doe</h1>
-      <p>And I'm a Photographer</p>
-      <a href="#"> 關於我們 </a>
+      <h1>歡迎光臨羅傑之家</h1>
+      <p class="fs-4">我們提供法國道地的經典甜點</p>
+      <router-link to="/aboutUs" class="rounded fs-5">關於我們</router-link>
     </div>
   </div>
   <div class="container">
@@ -12,15 +12,11 @@
       <h4 class="h2">最新消息</h4>
     </div>
     <div class="row">
-      <NewsCard title="情人節快樂"
-                imgUrl="https://images.unsplash.com/photo-1530098403657-0d93d64d087d?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fHZhbGVudGluZXMlMjBkYXl8ZW58MHwwfDB8fHww"
-                subTitle="今天是2月14日情人節，訂購本店送你情人節優惠折扣碼"/>
-      <NewsCard title="情人節快樂"
-                imgUrl="https://images.unsplash.com/photo-1530098403657-0d93d64d087d?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fHZhbGVudGluZXMlMjBkYXl8ZW58MHwwfDB8fHww"
-                subTitle="今天是2月14日情人節，訂購本店送你情人節優惠折扣碼"/>
-      <NewsCard title="情人節快樂"
-                imgUrl="https://images.unsplash.com/photo-1530098403657-0d93d64d087d?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fHZhbGVudGluZXMlMjBkYXl8ZW58MHwwfDB8fHww"
-                subTitle="今天是2月14日情人節，訂購本店送你情人節優惠折扣碼"/>
+      <template v-for="(article,index) in articles" :key="article.id">
+        <template v-if="index<3 && article.isPublic">
+          <NewsCard :news="article"/>
+        </template>
+      </template>
     </div>
   </div>
 
@@ -29,58 +25,93 @@
       <h4 class="h2">法式經典</h4>
     </div>
     <div class="row">
-      <ClassicDessert title="香酥可頌"
-        imgUrl="https://plus.unsplash.com/premium_photo-1681324092707-830e58cb3bd8?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Y3Jvc3NhaW50fGVufDB8MHwwfHx8MA%3D%3D"/>
-      <ClassicDessert title="瓶蓋可麗露"
-        imgUrl="https://media.istockphoto.com/id/1447421225/photo/le-cannel%C3%A9-a-small-cake-speciality-of-bordeaux.jpg?s=612x612&w=0&k=20&c=UfuUsBtu2aeZe-7Yv4z5SQFmtwVnF67TfGlKHTvsBPY="/>
+      <ClassicDessert title="閃電泡芙"
+        link="/products?category=泡芙"
+        imgUrl="https://images.unsplash.com/photo-1508438943662-234d663bbfaa?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fCVDMyVBOWNsYWlyfGVufDB8MHwwfHx8MA%3D%3D"/>
+      <ClassicDessert title="特色蛋糕"
+        link="/products?category=蛋糕"
+        imgUrl="https://media.istockphoto.com/id/1414484361/photo/delicious-fresh-fondant-with-hot-chocolate-and-mint-on-black-table-closeup.jpg?s=612x612&w=0&k=20&c=z7Ti0zZ_UIn09Xg4v3uQiKLk-VsOKomg5UbkQJNiEBE="/>
       <ClassicDessert title="酥軟千層"
+        link="/products?category=千層酥"
         imgUrl="https://images.unsplash.com/photo-1587122569949-ae6e755c6bdc?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bWlsbGUlMjBmZXVpbGxlfGVufDB8MHwwfHx8MA%3D%3D"/>
       <ClassicDessert title="經典馬卡龍"
+      link="/products?category=馬卡龍"
         imgUrl="https://images.unsplash.com/photo-1532063997725-c04d1abf7f67?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8bWFjYXJvb258ZW58MHwwfDB8fHww"/>
     </div>
   </div>
-  <div class="container">
+  <div class="container position-relative">
     <div class="mt-5 mb-4 text-center">
       <h4 class="h2">熱門商品</h4>
     </div>
-    <swiper
-    :autoplay="true"
-    :loop="true"
-    :navigation="true"
-    :modules="modules"
-    :pagination="{ clickable: true }"
-    :slides-per-view="auto"
-    :breakpoints="{
-      768:{
-        slidesPerView: 2,
-        slidesPerGroup: 1,
-      },
-      992:{
-        slidesPerView: 4,
-        slidesPerGroup: 1,
-      }
-    }"
-    :space-between="10"
-    @slideChange="onSlideChange"
-    >
-      <swiper-slide><ProductCard imgUrl="https://images.unsplash.com/photo-1580914653908-19a80ae52b82?q=80&w=1770&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"/></swiper-slide>
-      <swiper-slide><ProductCard imgUrl="https://images.unsplash.com/photo-1577859369205-6de8f02d8335?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bWFjYXJvb24lMjBjaG9jb2xhdGV8ZW58MHwwfDB8fHww"/></swiper-slide>
-      <swiper-slide><ProductCard imgUrl="https://plus.unsplash.com/premium_photo-1663040681678-2fa657630dc8?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8bWFjYXJvb24lMjBjaG9jb2xhdGV8ZW58MHwwfDB8fHww"/></swiper-slide>
-      <swiper-slide><ProductCard imgUrl="https://images.unsplash.com/photo-1612195325560-9d241f1e25cc?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fG1hY2Fyb29uJTIwY2hvY29sYXRlfGVufDB8MHwwfHx8MA%3D%3D"/></swiper-slide>
-      <swiper-slide><ProductCard imgUrl="https://images.unsplash.com/photo-1612195325687-5e8f2b31cb15?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fG1hY2Fyb29uJTIwY2hvY29sYXRlfGVufDB8MHwwfHx8MA%3D%3D"/></swiper-slide>
-    </Swiper>
-  </div>
+    <div class="swiper-container">
+      <div v-if="dataReady">
+        <swiper
+        :autoplay="true"
+        :loop="true"
+        :modules="modules"
+        :pagination="{clickable:true}"
+        :slides-per-view="1"
+        :breakpoints="{
+          768:{
+            slidesPerView: 2,
+            slidesPerGroup: 1,
+          },
+          992:{
+            slidesPerView: 4,
+            slidesPerGroup: 1,
+          }
+        }"
+        :space-between="10"
+        @swiper="onSwiper"
+        >
+          <swiper-slide v-for="product in hotProducts"
+                        :key="product.id">
+            <ProductCard :product="product" @go-to-detail="goToDetail"/>
+          </swiper-slide>
+        </Swiper>
+        <a href="#" class="position-absolute top-50 start-0" style="z-index: 100;" @click.prevent="slider.slidePrev()"><i class="bi bi-chevron-compact-left fs-1 text-dark"></i></a>
+        <a href="#"  class="position-absolute top-50 end-0" style="z-index: 100;" @click.prevent="slider.slideNext()"><i class="bi bi-chevron-compact-right fs-1 text-dark"></i></a>
+      </div>
+      <div v-else>
+      <swiper
+        :autoplay="true"
+        :loop="true"
+        :modules="modules"
+        :pagination="{clickable:true}"
+        :slides-per-view="1"
+        :breakpoints="{
+          768:{
+            slidesPerView: 2,
+            slidesPerGroup: 1,
+          },
+          992:{
+            slidesPerView: 4,
+            slidesPerGroup: 1,
+          }
+        }"
+        :space-between="10"
+        @swiper="onSwiper"
+        >
+          <swiper-slide v-for="product in 6"
+                        :key="product.id">
+            <ProductCard :imgUrl="product.imageUrl"
+                        :title="product.title"
+                        :price="product.price"
+                        :category="product.category"/>
+          </swiper-slide>
+        </Swiper>
+        <a href="#" class="position-absolute top-50 start-0" style="z-index: 100;" @click.prevent="slider.slidePrev()"><i class="bi bi-chevron-compact-left fs-1 text-dark"></i></a>
+        <a href="#"  class="position-absolute top-50 end-0" style="z-index: 100;" @click.prevent="slider.slideNext()"><i class="bi bi-chevron-compact-right fs-1 text-dark"></i></a>
+      </div>
+    </div>
+</div>
+<ProductDetailModal ref="modal" :product="tempProduct"/>
 </template>
 <style scoped>
 .hero-image {
-  /* Use "linear-gradient" to add a darken background effect to the image (photographer.jpg). This will make the text easier to read */
   background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-    url("https://images.unsplash.com/photo-1566121933407-3c7ccdd26763?q=80&w=1773&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
-
-  /* Set a specific height */
+    url(https://images.unsplash.com/photo-1597905733802-7bec89b471b6?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGZyZW5jaCUyMGRlc3NlcnR8ZW58MHwwfDB8fHww);
   padding: 200px 2rem;
-
-  /* Position and center the image to scale nicely on all screens */
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -122,9 +153,12 @@ import 'swiper/css/pagination'
 
 // import required modules
 import { Autoplay, Navigation, Pagination } from 'swiper/modules'
+import { ref, onMounted } from 'vue'
 import NewsCard from '@/components/NewsCard.vue'
 import ClassicDessert from '@/components/ClassicDessert.vue'
 import ProductCard from '@/components/ProductCard.vue'
+import api from '../../api/axios'
+import ProductDetailModal from '@/modals/ProductDetailModal.vue'
 
 export default {
   components: {
@@ -132,14 +166,63 @@ export default {
     SwiperSlide,
     NewsCard,
     ClassicDessert,
-    ProductCard
+    ProductCard,
+    ProductDetailModal
   },
   setup () {
-    const onSlideChange = (swiper) => {
-      console.log('slide change', swiper.activeIndex)
+    const dataReady = ref(false)
+    const slider = ref(null)
+    const onSwiper = (swiper) => {
+      slider.value = swiper
     }
+    const articles = ref(null)
+    const products = ref(null)
+    const tempProduct = ref({})
+    const hotProducts = ref(null)
+    const modal = ref(null)
+    const getArticles = (page) => {
+      api.getArticles(page)
+        .then((res) => {
+          articles.value = [...res.data.articles]
+          // console.log(articles.value)
+        })
+        .catch((err) => {
+          console.log(err.response.message)
+        })
+    }
+    const getProducts = (page) => {
+      api.getProducts(page)
+        .then((res) => {
+          // console.log(res.data.products)
+          products.value = [...res.data.products]
+          // console.log(products.value)
+          hotProducts.value = [...products.value.filter((item) => item.stars > 4)]
+          dataReady.value = true
+        })
+        .catch((err) => {
+          console.log(err.response.message)
+        })
+    }
+    const goToDetail = (product) => {
+      tempProduct.value = product
+      setTimeout(() => {
+        modal.value.openModal()
+      }, 500)
+    }
+    onMounted(() => {
+      getArticles(1)
+      getProducts()
+    })
     return {
-      onSlideChange,
+      modal,
+      tempProduct,
+      dataReady,
+      hotProducts,
+      products,
+      articles,
+      onSwiper,
+      slider,
+      goToDetail,
       modules: [Autoplay, Navigation, Pagination]
     }
   }

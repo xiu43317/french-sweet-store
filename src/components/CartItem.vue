@@ -2,17 +2,19 @@
   <div>
     <div class="row">
       <img
-        src="https://images.unsplash.com/photo-1542826438-bd32f43d626f?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8Y2FrZXxlbnwwfDB8MHx8fDA%3D"
+        :src="props.cart.product.imageUrl"
         class="img-fluid object-fit-cover col-4"
         style="height: 100px"
         alt=""
       />
       <div class="col-8 d-flex justify-content-between">
-        <div class="my-auto">
-          <p class="lh-sm">巧克力蛋糕</p>
-          <span>1 x NT$100</span>
+        <div class="d-flex flex-column justify-content-evenly">
+          <p class="lh-sm fw-bold fs-5">{{ props.cart.product.title }}</p>
+          <span>NT$ {{ props.cart.product.price }} x {{ props.cart.qty }}</span>
+          <span v-if="props.cart.total===props.cart.final_total">小計：NT$ {{props.cart.total}}</span>
+          <span class="text-success" v-else>折扣價：NT$ {{props.cart.final_total}}</span>
         </div>
-        <a href="#" class="my-auto link-dark">
+        <a href="#" class="my-auto link-dark" @click.prevent="deleteItem()" v-if="props.isRemovable">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="32"
@@ -34,7 +36,14 @@
     <hr />
   </div>
 </template>
-<script>
-export default {
+<script setup>
+import { useCartStore } from '@/stores/cart'
+const props = defineProps(['cart', 'isRemovable'])
+const cartStore = useCartStore()
+const { deleteCart, getCart } = cartStore
+const deleteItem = async () => {
+  const message = await deleteCart(props.cart.id)
+  console.log(message)
+  await getCart()
 }
 </script>

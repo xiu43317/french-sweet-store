@@ -5,7 +5,7 @@
         <div
           class="progress-bar"
           role="progressbar"
-          style="width: 0%"
+          :style="{width:progress+'%'}"
           aria-valuenow="50"
           aria-valuemin="0"
           aria-valuemax="100"
@@ -21,7 +21,8 @@
       <p class="position-absolute top-100 start-0 translate-middle">填寫資料</p>
       <button
         type="button"
-        class="position-absolute top-0 start-50 translate-middle btn btn-sm btn-secondary rounded-pill"
+        class="position-absolute top-0 start-50 translate-middle btn btn-sm rounded-pill"
+        :class="progress >= 50 ? 'btn-primary': 'btn-secondary'"
         style="width: 2rem; height: 2rem"
       >
         2
@@ -29,7 +30,8 @@
       <p class="position-absolute top-100 start-50 translate-middle">付款資訊</p>
       <button
         type="button"
-        class="position-absolute top-0 start-100 translate-middle btn btn-sm btn-secondary rounded-pill"
+        class="position-absolute top-0 start-100 translate-middle btn btn-sm rounded-pill"
+        :class="progress >= 100 ? 'btn-primary': 'btn-secondary'"
         style="width: 2rem; height: 2rem"
       >
         3
@@ -40,5 +42,19 @@
 </template>
 <style scoped></style>
 <script>
-export default {}
+import { ref, watch } from 'vue'
+
+export default {
+  props: ['outProgress'],
+  setup (props) {
+    const progress = ref(0)
+    progress.value = props.outProgress
+    watch(() => props.outProgress, () => {
+      progress.value = props.outProgress
+    })
+    return {
+      progress
+    }
+  }
+}
 </script>

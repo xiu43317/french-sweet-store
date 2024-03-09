@@ -2,7 +2,7 @@
   <div class="row">
     <div class="col-4">
       <img
-        src="https://images.unsplash.com/photo-1586788680434-30d324b2d46f?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTZ8fGNha2V8ZW58MHwwfDB8fHww"
+        :src="cart.product.imageUrl"
         alt=""
         class="img-fluid object-fit-cover"
       />
@@ -10,26 +10,29 @@
     <div class="col-8 d-flex justify-content-between align-items-center my-3 my-lg-0">
       <div class="d-flex justify-content-between flex-lg-column">
         <div class="mt-3">
-          <h5>紅絲絨蛋糕</h5>
-          <p class="mt-3 mt-lg-0">NT$90</p>
+          <h5>{{ cart.product.title }}</h5>
+          <p class="mt-3 mt-lg-0">單價：NT$ {{ cart.product.price }}</p>
+          <p class="mt-lg-0 text-success" v-if="cart.final_total !== cart.total">折扣價：NT$ {{ cart.final_total }}</p>
+          <p class="mt-lg-0" v-else>小計：NT$ {{ cart.total }}</p>
         </div>
       </div>
       <div class="input-group mb-3" style="max-width: 150px; max-height: 20px;">
-          <button class="fs-4 btn btn-outline-secondary border-0" type="button">
+          <button :disabled="isRenewing" class="fs-4 btn btn-outline-secondary border-0" type="button" @click="minusQty()">
             <i class="bi bi-dash-lg"></i>
           </button>
           <input
+            v-model="qty"
             type="number"
             class="form-control text-center rounded"
             placeholder="1"
             min="1"
           />
-          <button class="fs-4 btn btn-outline-secondary border-0" type="button">
+          <button :disabled="isRenewing" class="fs-4 btn btn-outline-secondary border-0" type="button" @click="addQty()">
             <i class="bi bi-plus-lg"></i>
           </button>
         </div>
       <div class="d-flex flex-column justify-content-center">
-        <a href="#" class="link-dark">
+        <a href="#" class="link-dark" @click.prevent="deleteItem()">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="32"
@@ -58,3 +61,58 @@ input[type="number"]::-webkit-outer-spin-button {
   margin: 0;
 }
 </style>
+<script>
+import { ref, watch } from 'vue'
+import { useCartStore } from '@/stores/cart.js'
+
+export default {
+  props: ['cart'],
+  setup (props) {
+    const cartStore = useCartStore()
+    const { getCart, deleteCart, updateCart } = cartStore
+    const deleteItem = async () => {
+      await deleteCart(props.cart.id)
+      await getCart()
+    }
+    const qty = ref(props.cart.qty)
+    const isRenewing = ref(false)
+    const addQty = async () => {
+      isRenewing.value = true
+      qty.value += 1
+      const item = {
+        data: {
+          product_id: props.cart.product_id,
+          qty: qty.value
+        }
+      }
+      await updateCart(props.cart.id, item)
+      await getCart()
+      isRenewing.value = false
+    }
+    const minusQty = async () => {
+      isRenewing.value = true
+      qty.value -= 1
+      if (qty.value === 0) qty.value = 1
+      const item = {
+        data: {
+          product_id: props.cart.product_id,
+          qty: qty.value
+        }
+      }
+      await updateCart(props.cart.id, item)
+      await getCart()
+      isRenewing.value = false
+    }
+    watch(qty, () => {
+      if (qty.value < 1) qty.value = 1
+    })
+    return {
+      qty,
+      addQty,
+      minusQty,
+      deleteItem,
+      isRenewing
+    }
+  }
+}
+</script>
