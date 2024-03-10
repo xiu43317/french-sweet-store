@@ -14,7 +14,8 @@
           <span v-if="props.cart.total===props.cart.final_total">小計：NT$ {{props.cart.total}}</span>
           <span class="text-success" v-else>折扣價：NT$ {{props.cart.final_total}}</span>
         </div>
-        <a href="#" class="my-auto link-dark" @click.prevent="deleteItem()" v-if="props.isRemovable">
+        <a href="#" class="my-auto link-dark" @click.prevent="deleteItem()" v-if="props.isRemovable" :disabled="props.isBtnDisabled">
+          <font-awesome-icon icon="spinner" class="fa-spin" v-show="isLoading && props.isBtnDisabled"/>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="32"
@@ -37,13 +38,16 @@
   </div>
 </template>
 <script setup>
-import { useCartStore } from '@/stores/cart'
-const props = defineProps(['cart', 'isRemovable'])
-const cartStore = useCartStore()
-const { deleteCart, getCart } = cartStore
-const deleteItem = async () => {
-  const message = await deleteCart(props.cart.id)
-  console.log(message)
-  await getCart()
+import { ref, watch } from 'vue'
+
+const props = defineProps(['cart', 'isRemovable', 'isBtnDisabled'])
+const emits = defineEmits(['deleteItem'])
+const deleteItem = () => {
+  emits('deleteItem', props.cart)
+  isLoading.value = true
 }
+watch(() => props.isBtnDisabled, () => {
+  if (!props.isBtnDisabled) isLoading.value = false
+})
+const isLoading = ref(false)
 </script>

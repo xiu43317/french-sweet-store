@@ -1,4 +1,5 @@
 <template>
+    <myLoading :active="isLoading"></myLoading>
     <FlowChart :outProgress="progress"/>
     <template v-if="isPaid">
       <FinishPayment/>
@@ -20,14 +21,17 @@ export default {
   setup (props) {
     const route = useRoute()
     const progress = ref(50)
+    const isLoading = ref(false)
     console.log(route.query.id)
     const isPaid = ref(false)
     const order = ref(null)
     const getOrder = (id) => {
+      isLoading.value = true
       api.getOrder(id)
         .then((res) => {
           order.value = res.data.order
           console.log(order.value)
+          isLoading.value = false
           if (order.value.is_paid === true) {
             isPaid.value = true
             progress.value = 100
@@ -35,16 +39,20 @@ export default {
         })
         .catch((err) => {
           console.log(err)
+          isLoading.value = false
         })
     }
     const payOrder = () => {
+      isLoading.value = true
       api.payOrder(route.query.id)
         .then((res) => {
           console.log(res)
+          isLoading.value = false
           if (res.data.success) isPaid.value = true
           progress.value = 100
         })
         .catch((err) => {
+          isLoading.value = false
           console.log(err)
         })
     }
@@ -52,6 +60,7 @@ export default {
       getOrder(route.query.id)
     })
     return {
+      isLoading,
       order,
       getOrder,
       isPaid,

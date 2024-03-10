@@ -21,6 +21,7 @@
 <script setup>
 import api from '@/api/axios'
 import { ref, onMounted, watch } from 'vue'
+import { notify } from '@/api/toast.js'
 
 // const articles = ref({})
 const props = defineProps(['currentNum'])
@@ -36,16 +37,22 @@ const getPages = () => {
         // console.log(res.data.articles)
         if (!res.data.articles) prevPageId.value = ''
         else prevPageId.value = res.data.articles.filter((item) => item.num === num + 1)[0]
-        console.log('prev:', prevPageId.value.id)
-        console.log('prevNum:', prevPageId.value.num)
+        // console.log('prev:', prevPageId.value.id)
+        // console.log('prevNum:', prevPageId.value.num)
+      })
+      .catch((err) => {
+        notify(err.response.data.message)
       })
     api.getArticles(num / 10)
       .then((res) => {
         // console.log(res.data.articles)
         const next = res.data.articles.filter((item) => item.num === num - 1)[0]
         nextPageId.value = next
-        console.log('next:', nextPageId.value.id)
-        console.log('nextNum:', nextPageId.value.num)
+        // console.log('next:', nextPageId.value.id)
+        // console.log('nextNum:', nextPageId.value.num)
+      })
+      .catch((err) => {
+        notify(err.response.data.message)
       })
   } else if (num === 1) {
     // 全部的最後一頁
@@ -57,6 +64,9 @@ const getPages = () => {
         prevPageId.value = res.data.articles.filter(item => item.num === num + 1)[0]
         console.log('prev', prevPageId.value.id)
         console.log('prevNum', prevPageId.value.num)
+      })
+      .catch((err) => {
+        notify(err.response.data.message)
       })
   } else if (num % 10 === 1 && num !== 1) {
     // 此頁第一筆資料
@@ -83,10 +93,13 @@ const getPages = () => {
         nextPageId.value = res.data.articles.filter(item => item.num === num - 1)[0]
         if (!res.data.articles.filter(item => item.num === num + 1)[0]) prevPageId.value = ''
         else prevPageId.value = res.data.articles.filter(item => item.num === num + 1)[0]
-        console.log('next:', nextPageId.value.id)
-        console.log('nextNum:', nextPageId.value.num)
-        console.log('prev:', prevPageId.value.id)
-        console.log('prevNum:', prevPageId.value.num)
+        // console.log('next:', nextPageId.value.id)
+        // console.log('nextNum:', nextPageId.value.num)
+        // console.log('prev:', prevPageId.value.id)
+        // console.log('prevNum:', prevPageId.value.num)
+      })
+      .catch((err) => {
+        notify(err.response.data.message)
       })
   }
 }

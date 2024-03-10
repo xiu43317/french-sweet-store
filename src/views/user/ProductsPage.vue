@@ -1,4 +1,5 @@
 <template>
+  <myLoading :active="isLoading"></myLoading>
   <div class="container">
     <div class="row">
       <div class="col-md-3">
@@ -79,6 +80,7 @@ export default {
     const pages = ref({})
     const tempProduct = ref({})
     const modal = ref(null)
+    const isLoading = ref(false)
     const category = ref(route.query.category ? route.query.category : '全部')
     const changeCategory = (item) => {
       category.value = item
@@ -88,15 +90,18 @@ export default {
       router.push(`/products?category=${item}`)
     }
     const getProducts = (page, category) => {
+      isLoading.value = true
       api.getProducts(page, category)
         .then((res) => {
           products.value = [...res.data.products]
           pages.value = { ...res.data.pagination }
           window.scroll(0, 0)
-          console.log(products.value)
+          // console.log(products.value)
+          isLoading.value = false
         })
         .catch((err) => {
           console.log(err)
+          isLoading.value = false
         })
     }
     const goToDetail = (product) => {
@@ -117,7 +122,8 @@ export default {
       category,
       changeCategory,
       getProducts,
-      goToDetail
+      goToDetail,
+      isLoading
     }
   }
 }

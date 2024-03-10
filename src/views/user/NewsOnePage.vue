@@ -1,4 +1,5 @@
 <template>
+  <myLoading :active="isLoading"></myLoading>
   <div class="container">
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
@@ -39,23 +40,29 @@ import { useRoute } from 'vue-router'
 import { onMounted, ref, watch } from 'vue'
 import ArticlePages from '@/components/ArticlePages.vue'
 import api from '@/api/axios'
+import { notify } from '@/api/toast.js'
 
 const route = useRoute()
 const article = ref({})
+const isLoading = ref(false)
 const getArticle = (id) => {
+  isLoading.value = true
   api.getArticle(id)
     .then((res) => {
-      console.log(res)
+      // console.log(res)
       article.value = { ...res.data.article }
       article.value.create_at =
       new Date(article.value.create_at * 1000).toLocaleDateString()
       num.value = route.params.num
+      isLoading.value = false
     })
     .catch((err) => {
-      console.log(err)
+      // console.log(err)
+      notify(err.response.data.message)
+      isLoading.value = false
     })
 }
-console.log(route.params.id, route.params.num)
+// console.log(route.params.id, route.params.num)
 const num = ref(route.params.num)
 onMounted(() => {
   getArticle(route.params.id)

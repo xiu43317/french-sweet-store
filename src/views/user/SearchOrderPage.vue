@@ -1,4 +1,5 @@
 <template>
+  <myLoading :active="isLoading"></myLoading>
   <div class="container text-center mh-370" v-if="!hideSearchBar">
   <h3 class="fs-2 my-5">查詢訂單</h3>
   <div class="input-group input-group-lg mt-5 mx-auto mw-500">
@@ -44,6 +45,7 @@ import OrderDetail from '@/components/OrderDetail.vue'
 import { useRouter } from 'vue-router'
 import api from '@/api/axios.js'
 import { ref } from 'vue'
+import { notify } from '@/api/toast.js'
 
 export default {
   components: { OrderDetail },
@@ -52,33 +54,40 @@ export default {
     const order = ref(null)
     const orderId = ref(null)
     const router = useRouter()
+    const isLoading = ref(false)
     const getOrder = () => {
+      isLoading.value = true
       api.getOrder(orderId.value)
         .then((res) => {
-          console.log(res.data)
-          if (res.data.order === null) console.log('輸入錯誤')
+          isLoading.value = false
+          // console.log(res.data)
+          if (res.data.order === null) notify(false, '沒有此訂單喔')// console.log('輸入錯誤')
           else {
             if (res.data.order.is_paid) {
-              console.log('已付款')
+              // console.log('已付款')
               order.value = res.data.order
               hideSearchBar.value = true
             } else router.push(`/payment?id=${orderId.value}`)
           }
         })
         .catch((err) => {
-          console.log(err)
+          // console.log(err)
+          notify(false, err.response.data.message)
+          isLoading.value = false
         })
     }
     const redoSearch = () => {
       hideSearchBar.value = false
       order.value = null
+      orderId.value = null
     }
     return {
       order,
       orderId,
       getOrder,
       hideSearchBar,
-      redoSearch
+      redoSearch,
+      isLoading
     }
   }
 }

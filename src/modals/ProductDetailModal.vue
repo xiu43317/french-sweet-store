@@ -43,11 +43,12 @@
               <del class="h6">原價：NT$ {{ tempProduct.origin_price }} 元</del>
               <div class="mt-3">
                 <div class="input-group">
-                  <select class="form-select" id="inputGroupSelect02" v-model="myQty">
+                  <select class="form-select" id="inputGroupSelect02" v-model="myQty" :disabled="isSpinning">
                     <option default disabled>請選擇數量</option>
                     <option :value="item" v-for="(item,index) in 10" :key="index">{{ item }}</option>
                   </select>
-                  <button type="button" class="btn btn-outline-secondary" @click="addToCart()">
+                  <button :disabled="isSpinning" type="button" class="btn btn-outline-secondary" @click="addToCart()">
+                    <font-awesome-icon icon="spinner" class="fa-spin" v-show="isSpinning"/>
                     加入購物車
                   </button>
                 </div>
@@ -65,6 +66,7 @@ import { Modal } from 'bootstrap'
 import { ref, onMounted } from 'vue'
 import { useCartStore } from '@/stores/cart'
 import { storeToRefs } from 'pinia'
+import { notify } from '@/api/toast.js'
 
 export default {
   props: ['product'],
@@ -76,6 +78,7 @@ export default {
     const myQty = ref(1)
     const modal = ref(null)
     const tempProduct = ref({})
+    const isSpinning = ref(false)
     const openModal = () => {
       tempProduct.value = props.product
       myModal.show()
@@ -84,6 +87,7 @@ export default {
       myModal.hide()
     }
     const addToCart = async () => {
+      isSpinning.value = true
       const index = cart.value.carts.findIndex(item => item.product_id === tempProduct.value.id)
       const item = {
         data: {
@@ -96,17 +100,32 @@ export default {
         const newQty = cart.value.carts[index].qty + myQty.value
         const cartId = cart.value.carts[index].id
         item.data.qty = newQty
-        console.log(item.data.qty)
+        // console.log(item.data.qty)
         await updateCart(cartId, item)
+          .then((res) => {
+            notify(true, `${tempProduct.value.title}${res.data.message}`)
+            isSpinning.value = false
+            closeModal()
+          })
+          .catch((err) => {
+            notify(false, `${err.response.data.message}`)
+          })
         await getCart()
         myQty.value = 1
       } else {
         // 沒有在購物車裡面
         await createCart(item)
+          .then((res) => {
+            notify(true, `${tempProduct.value.title}${res.data.message}`)
+            isSpinning.value = false
+            closeModal()
+          })
+          .catch((err) => {
+            notify(false, `${err.response.data.message}`)
+          })
         await getCart()
         myQty.value = 1
       }
-      closeModal()
     }
     onMounted(() => {
       myModal = new Modal(modal.value)
@@ -124,7 +143,8 @@ export default {
       createCart,
       updateCart,
       addToCart,
-      getCart
+      getCart,
+      isSpinning
     }
   }
 }

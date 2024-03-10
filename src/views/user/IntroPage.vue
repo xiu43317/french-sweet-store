@@ -1,4 +1,5 @@
 <template>
+  <myLoading :active="isLoading"></myLoading>
   <!-- Banner -->
   <div class="hero-image">
     <div class="hero-text">
@@ -49,7 +50,6 @@
         :autoplay="true"
         :loop="true"
         :modules="modules"
-        :pagination="{clickable:true}"
         :slides-per-view="1"
         :breakpoints="{
           768:{
@@ -170,6 +170,7 @@ export default {
     ProductDetailModal
   },
   setup () {
+    const isLoading = ref(false)
     const dataReady = ref(false)
     const slider = ref(null)
     const onSwiper = (swiper) => {
@@ -191,6 +192,7 @@ export default {
         })
     }
     const getProducts = (page) => {
+      isLoading.value = true
       api.getProducts(page)
         .then((res) => {
           // console.log(res.data.products)
@@ -198,9 +200,11 @@ export default {
           // console.log(products.value)
           hotProducts.value = [...products.value.filter((item) => item.stars > 4)]
           dataReady.value = true
+          isLoading.value = false
         })
         .catch((err) => {
-          console.log(err.response.message)
+          console.log(err.response.data.message)
+          isLoading.value = false
         })
     }
     const goToDetail = (product) => {
@@ -214,6 +218,7 @@ export default {
       getProducts()
     })
     return {
+      isLoading,
       modal,
       tempProduct,
       dataReady,

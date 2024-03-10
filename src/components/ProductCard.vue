@@ -20,7 +20,10 @@
         <p class="card-text fs-5">
           NT$ {{ tempProduct.price }}
         </p>
-        <button class="btn btn-outline-secondary w-100" @click.stop="addToCart()">加入購物車</button>
+        <button class="btn btn-outline-secondary w-100" @click.stop="addToCart()" :disabled="addBtnState">
+          <font-awesome-icon icon="spinner" class="fa-spin" v-show="isSpinning"/>
+          加入購物車
+        </button>
       </div>
     </div>
 </template>
@@ -57,19 +60,24 @@
 import { ref } from 'vue'
 import { useCartStore } from '@/stores/cart'
 import { storeToRefs } from 'pinia'
+import { notify } from '@/api/toast.js'
 
 export default {
   props: ['product'],
   setup (props, context) {
     const cartStore = useCartStore()
-    const { getCart, updateCart, createCart } = cartStore
-    const { cart } = storeToRefs(cartStore)
+    const isSpinning = ref(false)
+    const { getCart, updateCart, createCart, changeAddStatus } = cartStore
+    const { cart, addBtnState } = storeToRefs(cartStore)
     const productModal = ref(null)
     const tempProduct = { ...props.product }
     const goToDetail = () => {
       context.emit('go-to-detail', tempProduct)
     }
     const addToCart = async () => {
+      const title = tempProduct.title
+      isSpinning.value = true
+      changeAddStatus(true)
       const index = cart.value.carts.findIndex(item => item.product_id === tempProduct.id)
       const item = {
         data: {
@@ -82,16 +90,31 @@ export default {
         const newQty = cart.value.carts[index].qty + 1
         const cartId = cart.value.carts[index].id
         item.data.qty = newQty
-        console.log(item.data.qty)
+        // console.log(item.data.qty)
         await updateCart(cartId, item)
+          .then((res) => {
+            notify(true, `${title}${res.data.message}`)
+          })
+          .catch((err) => {
+            notify(false, err.response.data.message)
+          })
         await getCart()
       } else {
         // 沒有在購物車裡面
         await createCart(item)
+          .then((res) => {
+            notify(true, `${title}${res.data.message}`)
+          })
+          .catch((err) => {
+            notify(false, err.response.data.message)
+          })
         await getCart()
       }
+      isSpinning.value = false
+      changeAddStatus(false)
     }
     return {
+      isSpinning,
       cartStore,
       addToCart,
       goToDetail,
@@ -99,6 +122,8 @@ export default {
       createCart,
       tempProduct,
       productModal,
+      addBtnState,
+      changeAddStatus,
       getCart,
       cart
     }

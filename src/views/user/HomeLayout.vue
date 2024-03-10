@@ -68,7 +68,7 @@
   <router-view></router-view>
   <!-- 底部Banner -->
   <BottomBanner/>
-  <div class="container-fluid py-5 bg-light">
+  <div class="container-fluid py-5 bg-light h-100">
     <div class="copyright text-center fs-5" style="color: #89b0ae">
       <p>羅傑之家 所有圖片皆來自於網路</p>
       <p>Copyright © 2024</p>
@@ -94,21 +94,34 @@
     </div>
     <div class="offcanvas-body">
       <div class="mb-2 d-flex justify-content-end">
-        <button type="button" class="btn btn-outline-success" @click="deleteAllItems">清空購物車</button>
+        <button type="button" class="btn btn-outline-success"
+        @click="deleteAllItems" :disabled="clearButtoonDisable || !cart.total">
+        <font-awesome-icon icon="spinner" class="fa-spin" v-show="isLoading"/>
+        清空購物車
+      </button>
       </div>
       <hr>
+      <div class="text-center my-5" v-if="cart.total===0">
+        <p class="fs-4 fw-bold">你的購物車裡沒東西喔！</p>
+        <button type="button"
+        data-bs-dismiss="offcanvas"
+        class="btn btn-lg btn-success" @click="goToProducts()">繼續選購</button>
+      </div>
       <!-- 做成元件 -->
-      <CartItem v-for="item in cart.carts" :key="item.id" :cart="item" :isRemovable="removeItem"/>
+      <CartItem v-for="item in cart.carts" :key="item.id"
+      :cart="item" :isRemovable="removeItem" :isBtnDisabled="isBtnDisabled"
+      @delete-item="deleteItem"/>
       <!-- 做成元件 -->
       <p class="h4 text-success" v-if="cart.final_total !== cart.total">折扣價：NT$ {{ cart.final_total }}</p>
       <p class="h4" v-else>總計：NT$ {{ cart.total }}</p>
       <div class="check mt-3">
         <button type="button" class="btn btn-secondary w-100 fs-4"
         data-bs-dismiss="offcanvas"
-        @click="goToCheck()">前往結帳</button>
+        @click="goToCheck()" :disabled="clearButtoonDisable || !cart.total">前往結帳</button>
       </div>
     </div>
   </div>
+  <UpArrow/>
 </template>
 <script>
 import { ref, onMounted } from 'vue'
@@ -117,34 +130,106 @@ import CartItem from '@/components/CartItem.vue'
 import BottomBanner from '@/components/BottomBanner.vue'
 import { useCartStore } from '@/stores/cart'
 import { storeToRefs } from 'pinia'
+import Swal from 'sweetalert2'
+import UpArrow from '@/components/UpArrow.vue'
+import { notify } from '@/api/toast.js'
 
 export default {
-  components: { BottomBanner, CartItem },
+  components: { BottomBanner, CartItem, UpArrow },
   setup (props) {
     const removeItem = ref(true)
     const cartStore = useCartStore()
-    const { getCart, deleteAllCart } = cartStore
+    const isLoading = ref(false)
+    const clearButtoonDisable = ref(false)
+    const { getCart, deleteAllCart, deleteCart } = cartStore
     const { cart } = storeToRefs(cartStore)
     const router = useRouter()
-    const msg = ref('Hello World')
+    const isBtnDisabled = ref(false)
     const goToCheck = () => {
       router.push('/check')
     }
-    const deleteAllItems = async () => {
-      await deleteAllCart()
-      await getCart()
+    const goToProducts = () => {
+      router.push('/products')
+    }
+    const deleteAllItems = () => {
+      Swal.fire({
+        icon: 'warning', // error\warning\info\question
+        title: '確定刪除整個購物車？',
+        text: '刪除後的資料無法恢復',
+        showCancelButton: true,
+        confirmButtonColor: 'red',
+        cancelButtonColor: 'gray',
+        confirmButtonText: '確定',
+        confirmButton: false,
+        cancelButtonText: '取消'
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          console.log('確認')
+          await deleteAllCart()
+            .then((res) => {
+              notify(true, `全部${res.data.message}`)
+            })
+            .catch((err) => {
+              console.log(err.response.data.message)
+              notify(false, `${err.response.data.message}`)
+            })
+          isLoading.value = true
+          clearButtoonDisable.value = true
+          await getCart()
+          isLoading.value = false
+          clearButtoonDisable.value = false
+        } else if (result.isDenied) {
+          console.log('取消')
+        }
+      })
+    }
+    const deleteItem = async (cart) => {
+      Swal.fire({
+        icon: 'warning', // error\warning\info\question
+        title: `確定刪除${cart.product.title}`,
+        text: '刪除後的資料無法恢復',
+        showCancelButton: true,
+        confirmButtonColor: 'red',
+        cancelButtonColor: 'gray',
+        confirmButtonText: '確定',
+        confirmButton: false,
+        cancelButtonText: '取消'
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          console.log('確認')
+          clearButtoonDisable.value = true
+          isBtnDisabled.value = true
+          await deleteCart(cart.id)
+            .then((res) => {
+              notify(true, `${cart.product.title}${res.data.message}`)
+            })
+            .catch((err) => {
+              notify(false, `${err.response.data.message}`)
+            })
+          await getCart()
+          isBtnDisabled.value = false
+          clearButtoonDisable.value = false
+        } else if (result.isDenied) {
+          console.log('取消')
+        }
+      })
     }
     onMounted(() => {
-      getCart()
+      // getCart()
     })
     return {
+      isBtnDisabled,
+      clearButtoonDisable,
       removeItem,
+      goToProducts,
       deleteAllItems,
       deleteAllCart,
+      deleteCart,
+      deleteItem,
       cart,
-      msg,
       goToCheck,
-      getCart
+      getCart,
+      isLoading
     }
   }
 }

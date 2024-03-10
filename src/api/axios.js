@@ -45,38 +45,38 @@ const getCart = async () => {
 }
 const createCart = async (cart) => {
   return await axios.post(`${url}/api/${path}/cart`, cart)
-    .then((res) => {
-      console.log(res.data)
-    }).catch((err) => {
-      console.log(err.response.message)
-    })
+  // .then((res) => {
+  //   console.log(res.data)
+  // }).catch((err) => {
+  //   console.log(err.response.message)
+  // })
 }
 const updateCart = async (id, cart) => {
   return await axios.put(`${url}/api/${path}/cart/${id}`, cart)
-    .then((res) => {
-      console.log(res.data)
-    }).catch((err) => {
-      console.log(err.response.message)
-    })
+  // .then((res) => {
+  //   console.log(res.data)
+  // }).catch((err) => {
+  //   console.log(err.response.message)
+  // })
 }
 const deleteCartAll = async () => {
   return await axios.delete(`${url}/api/${path}/carts`)
-    .then((res) => {
-      console.log(res.data)
-    }).catch((err) => {
-      console.log(err.response.message)
-    })
+  // .then((res) => {
+  //   console.log(res.data)
+  // }).catch((err) => {
+  //   console.log(err.response.message)
+  // })
 }
 const deleteCart = async (id) => {
   return await axios.delete(`${url}/api/${path}/cart/${id}`)
 }
 const useCoupon = async (coupon) => {
   return await axios.post(`${url}/api/${path}/coupon`, coupon)
-    .then((res) => {
-      console.log(res.data)
-    }).catch((err) => {
-      console.log(err.response.data.message)
-    })
+  // .then((res) => {
+  //   console.log(res.data)
+  // }).catch((err) => {
+  //   console.log(err.response.data.message)
+  // })
 }
 const sendOrder = async (order) => {
   return await axios.post(`${url}/api/${path}/order`, order)
