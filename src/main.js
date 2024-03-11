@@ -18,6 +18,8 @@ import { far } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import CKEditor from '@ckeditor/ckeditor5-vue'
 import 'vue-loading-overlay/dist/css/index.css'
+import AOS from 'aos'
+import 'aos/dist/aos.css'
 
 defineRule('email', AllRules.email)
 defineRule('required', AllRules.required)
@@ -31,7 +33,7 @@ router.afterEach((to, from, failure) => {
 })
 setLocale('zh_TW')
 library.add(fas, far)
-
+AOS.init()
 const app = createApp(App)
 
 app.use(LoadingPlugin)

@@ -84,7 +84,7 @@ export default {
     const category = ref(route.query.category ? route.query.category : '全部')
     const changeCategory = (item) => {
       category.value = item
-      console.log(category.value)
+      // console.log(category.value)
       if (item === '全部') getProducts(1)
       else getProducts(1, category.value)
       router.push(`/products?category=${item}`)

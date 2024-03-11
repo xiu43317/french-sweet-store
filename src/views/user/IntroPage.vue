@@ -15,7 +15,7 @@
     <div class="row">
       <template v-for="(article,index) in articles" :key="article.id">
         <template v-if="index<3 && article.isPublic">
-          <NewsCard :news="article"/>
+          <NewsCard :news="article" data-aos="fade-up" data-aos-duration="1000" data-aos-once="false"/>
         </template>
       </template>
     </div>
@@ -27,16 +27,20 @@
     </div>
     <div class="row">
       <ClassicDessert title="閃電泡芙"
+        data-aos="fade-right" data-aos-duration="1000" data-aos-once="false"
         link="/products?category=泡芙"
         imgUrl="https://images.unsplash.com/photo-1508438943662-234d663bbfaa?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fCVDMyVBOWNsYWlyfGVufDB8MHwwfHx8MA%3D%3D"/>
       <ClassicDessert title="特色蛋糕"
+        data-aos="fade-up" data-aos-duration="1000" data-aos-once="false"
         link="/products?category=蛋糕"
         imgUrl="https://media.istockphoto.com/id/1414484361/photo/delicious-fresh-fondant-with-hot-chocolate-and-mint-on-black-table-closeup.jpg?s=612x612&w=0&k=20&c=z7Ti0zZ_UIn09Xg4v3uQiKLk-VsOKomg5UbkQJNiEBE="/>
       <ClassicDessert title="酥軟千層"
+        data-aos="fade-down" data-aos-duration="1000" data-aos-once="false"
         link="/products?category=千層酥"
         imgUrl="https://images.unsplash.com/photo-1587122569949-ae6e755c6bdc?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bWlsbGUlMjBmZXVpbGxlfGVufDB8MHwwfHx8MA%3D%3D"/>
       <ClassicDessert title="經典馬卡龍"
-      link="/products?category=馬卡龍"
+        data-aos="fade-left" data-aos-duration="1000" data-aos-once="false"
+        link="/products?category=馬卡龍"
         imgUrl="https://images.unsplash.com/photo-1532063997725-c04d1abf7f67?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8bWFjYXJvb258ZW58MHwwfDB8fHww"/>
     </div>
   </div>
@@ -66,7 +70,8 @@
         >
           <swiper-slide v-for="product in hotProducts"
                         :key="product.id">
-            <ProductCard :product="product" @go-to-detail="goToDetail"/>
+            <ProductCard :product="product" @go-to-detail="goToDetail"
+            data-aos="fade-up" data-aos-duration="1000" data-aos-once="false"/>
           </swiper-slide>
         </Swiper>
         <a href="#" class="position-absolute top-50 start-0" style="z-index: 100;" @click.prevent="slider.slidePrev()"><i class="bi bi-chevron-compact-left fs-1 text-dark"></i></a>

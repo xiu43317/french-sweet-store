@@ -10,6 +10,7 @@
     "deploy": "vite build && gh-pages -d dist"
   },
   "dependencies": {
+    "aos": "^2.3.4",
     "axios": "^1.6.5",
     "dotenv": "^16.3.1",
     "pinia": "^2.1.7",
