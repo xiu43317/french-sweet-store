@@ -1,0 +1,1 @@
+import{G as o,r as t,o as s,c as r,t as c}from"./index-KtGT-tiA.js";const i={__name:"ProductPage",setup(n){const e=o();console.log(e.params.id);const a=t(e.params.id);return(l,u)=>(s(),r("div",null,"編號:"+c(a.value),1))}};export{i as default};
