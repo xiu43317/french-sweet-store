@@ -59,17 +59,26 @@
         </tr>
       </tbody>
     </table>
+    <!-- pagination -->
+    <AdminPagination
+      :pages="pagination"
+      @emit-page="getCoupons"
+      ref="pagination"
+    >
+    </AdminPagination>
   </div>
 </template>
 <script>
 import CouponModal from '@/modals/CouponModal.vue'
 import CouponDelModal from '@/modals/CouponDelModal.vue'
+import AdminPagination from '@/components/BottomPagination.vue'
 const url = import.meta.env.VITE_APP_API_URL
 const path = import.meta.env.VITE_APP_API_NAME
 export default {
   data () {
     return {
       coupons: [],
+      pagination: {},
       tempCoupon: {},
       isLoading: false,
       isNew: false,
@@ -83,7 +92,7 @@ export default {
       }
     }
   },
-  components: { CouponModal, CouponDelModal },
+  components: { CouponModal, CouponDelModal, AdminPagination },
   methods: {
     openModal (status, coupon = {}) {
       if (status === 'new') {
@@ -108,7 +117,9 @@ export default {
       this.isLoading = true
       this.$http.get(`${url}/api/${path}/admin/coupons`)
         .then((res) => {
+          // console.log(res)
           this.coupons = [...res.data.coupons]
+          this.pagination = { ...res.data.pagination }
           this.coupons.forEach((item) => {
             const date = new Date(item.due_date * 1000).toISOString().split('T')[0]
             item.formatDate = date
@@ -118,7 +129,7 @@ export default {
         })
         .catch((err) => {
           // console.dir(err)
-          alert(err.response.data.message)
+          alert(err.message)
           this.isLoading = false
         })
     },

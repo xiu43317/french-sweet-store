@@ -1,7 +1,7 @@
 <template>
   <myLoading :active="isLoading"></myLoading>
   <!-- Banner -->
-  <div class="hero-image">
+  <div class="hero-image" data-aos="zoom-out">
     <div class="hero-text">
       <h1>歡迎光臨羅傑之家</h1>
       <p class="fs-4">我們提供法國道地的經典甜點</p>
@@ -125,6 +125,7 @@
 .hero-text {
   text-align: center;
   position: absolute;
+  width: 100%;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -132,7 +133,7 @@
 }
 .hero-text a {
   display: inline-block;
-  padding: 0.6em 3em;
+  padding: 0.6em 1em;
   line-height: 1;
   background-color: rgba(2555, 255, 255, 0.2);
   box-shadow: 0 0 1.6em rgba(0, 0, 0, 0.16);

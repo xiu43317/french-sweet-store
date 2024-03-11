@@ -16,6 +16,7 @@
             :src="tempProduct.imageUrl"
             alt=""
             style="max-height: 400px"
+            data-aos="zoom-in"
           />
         </div>
         <div class="col-md-6 d-flex flex-column justify-content-evenly">

@@ -86,7 +86,7 @@
 <script>
 import editProduct from '@/modals/Editmodal.vue'
 import deleteProduct from '@/modals/DeleteModal.vue'
-import adminPagination from '@/components/BottomPagination.vue'
+import AdminPagination from '@/components/BottomPagination.vue'
 const url = import.meta.env.VITE_APP_API_URL
 const path = import.meta.env.VITE_APP_API_NAME
 export default {
@@ -175,6 +175,6 @@ export default {
     this.editModal = this.$refs.productModal
     this.delModel = this.$refs.delProductModal
   },
-  components: { editProduct, deleteProduct, adminPagination }
+  components: { editProduct, deleteProduct, AdminPagination }
 }
 </script>

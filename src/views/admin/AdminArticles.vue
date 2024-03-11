@@ -50,6 +50,11 @@
           </tr>
         </tbody>
       </table>
+      <AdminPagination
+      :pages="pagination"
+      @emit-page="getArticles"
+      ref="pagination"
+      />
     </div>
     <ArticleModal ref="articleModal"
     @update-article="updateArticle"
@@ -65,6 +70,8 @@
 <script>
 import ArticleModal from '@/modals/ArticleModal.vue'
 import DeleteModal from '@/modals/DeleteModal.vue'
+import AdminPagination from '@/components/BottomPagination.vue'
+
 const url = import.meta.env.VITE_APP_API_URL
 const path = import.meta.env.VITE_APP_API_NAME
 export default {
@@ -72,11 +79,12 @@ export default {
     return {
       isLoading: false,
       isNew: false,
+      pagination: {},
       articles: [],
       tempArticle: {}
     }
   },
-  components: { ArticleModal, DeleteModal },
+  components: { ArticleModal, DeleteModal, AdminPagination },
   methods: {
     getArticles () {
       this.isLoading = true
@@ -84,6 +92,7 @@ export default {
         .get(`${url}/api/${path}/admin/articles`)
         .then((res) => {
           this.articles = [...res.data.articles]
+          this.pagination = { ...res.data.pagination }
           this.isLoading = false
         })
         .catch((err) => {

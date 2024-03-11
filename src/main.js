@@ -33,7 +33,7 @@ router.afterEach((to, from, failure) => {
 })
 setLocale('zh_TW')
 library.add(fas, far)
-AOS.init()
+AOS.init({ duration: 1000 })
 const app = createApp(App)
 
 app.use(LoadingPlugin)

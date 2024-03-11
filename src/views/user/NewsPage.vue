@@ -2,10 +2,13 @@
   <myLoading :active="isLoading"></myLoading>
   <div class="container mt-3">
     <div class="text-center">
-      <h3 class="fs-2 my-3 my-lg-5">最新消息</h3>
+      <h3 class="fs-2 my-3 my-lg-5"
+      data-aos="fade-right">最新消息</h3>
     </div>
     <template v-for="article in articles" :key="article.id">
+      <div data-aos="fade-left" data-aos-duration="1000" data-aos-once="false">
       <NewsBigCard :article="article" v-if="article.isPublic"/>
+      </div>
     </template>
     <div class="d-flex justify-content-center">
       <BottomPagination @emit-page="getArticles" :pages="pages"/>

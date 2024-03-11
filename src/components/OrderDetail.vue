@@ -63,6 +63,10 @@
             <span v-else class="text-success">付款完成</span>
           </td>
         </tr>
+        <tr>
+          <th>備註</th>
+          <td>{{ userOrder.message }}</td>
+        </tr>
       </tbody>
     </table>
     <button @click="payOrder" class="btn btn-lg btn-secondary w-100" v-if="!userOrder.is_paid">確認付款</button>

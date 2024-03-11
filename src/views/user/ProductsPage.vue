@@ -46,7 +46,8 @@
       <div class="col-md-9">
         <div class="row">
           <div class="col-md-4 mb-5 mt-1" v-for="product in products" :key="product.id">
-            <ProductCard :product="product" v-if="product.is_enabled" @go-to-detail="goToDetail"/>
+            <ProductCard :product="product" v-if="product.is_enabled" @go-to-detail="goToDetail"
+            data-aos="flip-left"/>
           </div>
         </div>
         <div class="d-flex justify-content-center">

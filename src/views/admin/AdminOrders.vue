@@ -67,6 +67,11 @@
         </template>
       </tbody>
     </table>
+    <AdminPagination
+      :pages="pagination"
+      @emit-page="getOrders"
+      ref="pagination"
+    />
   </div>
   <DeleteModal
   :product="tempOrder"
@@ -86,6 +91,7 @@
 import OrderModal from '@/modals/OrderModal.vue'
 import DeleteModal from '@/modals/DeleteModal.vue'
 import DeleteAllModal from '@/modals/DeleteAllModal.vue'
+import AdminPagination from '@/components/BottomPagination.vue'
 
 const url = import.meta.env.VITE_APP_API_URL
 const path = import.meta.env.VITE_APP_API_NAME
@@ -94,7 +100,8 @@ export default {
     return {
       orders: [],
       isLoading: false,
-      tempOrder: {}
+      tempOrder: {},
+      pagination: {}
     }
   },
   methods: {
@@ -104,6 +111,7 @@ export default {
         .get(`${url}/api/${path}/admin/orders`)
         .then((res) => {
           this.orders = [...res.data.orders]
+          this.pagination = { ...res.data.pagination }
           this.isLoading = false
         })
         .catch((err) => {
@@ -172,6 +180,6 @@ export default {
   mounted () {
     this.getOrders()
   },
-  components: { DeleteModal, OrderModal, DeleteAllModal }
+  components: { DeleteModal, OrderModal, DeleteAllModal, AdminPagination }
 }
 </script>

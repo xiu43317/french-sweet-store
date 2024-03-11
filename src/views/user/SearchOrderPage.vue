@@ -80,6 +80,7 @@ export default {
       hideSearchBar.value = false
       order.value = null
       orderId.value = null
+      window.scrollTo(0, 0)
     }
     return {
       order,

@@ -31,6 +31,10 @@
                     <th>地址</th>
                     <td>{{ tempOrder.user.address }}</td>
                   </tr>
+                  <tr>
+                    <th>備註</th>
+                    <td>{{ tempOrder.message }}</td>
+                  </tr>
                 </tbody>
               </table>
             </div>
