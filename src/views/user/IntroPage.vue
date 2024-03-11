@@ -42,7 +42,7 @@
   </div>
   <div class="container position-relative">
     <div class="mt-5 mb-4 text-center">
-      <h4 class="h2">熱門商品</h4>
+      <h4 class="h2">五星推薦</h4>
     </div>
     <div class="swiper-container">
       <div v-if="dataReady">

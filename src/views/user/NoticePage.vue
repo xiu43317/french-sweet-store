@@ -167,12 +167,15 @@
     </div>
   </div>
 </template>
-<style>
+<style scoped>
 .mh-380{
     min-height: 380px;
 }
 .mw-800{
   max-width: 800px;
+}
+button {
+  font-size: 24px;
 }
 </style>
 <script>

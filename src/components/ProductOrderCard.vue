@@ -12,7 +12,7 @@
         <div class="mt-3">
           <h5>{{ cart.product.title }}</h5>
           <p class="mt-3 mt-lg-0">單價：NT$ {{ cart.product.price }}</p>
-          <p class="mt-lg-0 text-success" v-if="cart.final_total !== cart.total">折扣價：NT$ {{ cart.final_total }}</p>
+          <p class="mt-lg-0 text-success" v-if="cart.final_total !== cart.total">折扣價：NT$ {{ delFloat(cart.final_total) }}</p>
           <p class="mt-lg-0" v-else>小計：NT$ {{ cart.total }}</p>
         </div>
       </div>
@@ -70,6 +70,7 @@ import { useCartStore } from '@/stores/cart.js'
 import { notify } from '@/api/toast'
 import { storeToRefs } from 'pinia'
 import Swal from 'sweetalert2'
+import { delFloat } from '@/api/math.js'
 
 export default {
   props: ['cart'],
@@ -190,6 +191,7 @@ export default {
       qty,
       myQty,
       addQty,
+      delFloat,
       minusQty,
       updateQty,
       deleteItem,

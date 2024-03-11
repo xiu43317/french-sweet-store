@@ -12,7 +12,7 @@
           <p class="lh-sm fw-bold fs-5">{{ props.cart.product.title }}</p>
           <span>NT$ {{ props.cart.product.price }} x {{ props.cart.qty }}</span>
           <span v-if="props.cart.total===props.cart.final_total">小計：NT$ {{props.cart.total}}</span>
-          <span class="text-success" v-else>折扣價：NT$ {{props.cart.final_total}}</span>
+          <span class="text-success" v-else>折扣價：NT$ {{ delFloat(props.cart.final_total) }}</span>
         </div>
         <a href="#" class="my-auto link-dark" @click.prevent="deleteItem()" v-if="props.isRemovable" :disabled="props.isBtnDisabled">
           <font-awesome-icon icon="spinner" class="fa-spin" v-show="isLoading && props.isBtnDisabled"/>
@@ -39,6 +39,7 @@
 </template>
 <script setup>
 import { ref, watch } from 'vue'
+import { delFloat } from '@/api/math.js'
 
 const props = defineProps(['cart', 'isRemovable', 'isBtnDisabled'])
 const emits = defineEmits(['deleteItem'])

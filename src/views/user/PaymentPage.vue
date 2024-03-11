@@ -15,6 +15,7 @@ import FlowChart from '@/components/FlowChart.vue'
 import OrderDetail from '@/components/OrderDetail.vue'
 import { useRoute } from 'vue-router'
 import api from '@/api/axios.js'
+import { notify } from '@/api/toast.js'
 
 export default {
   components: { FlowChart, OrderDetail, FinishPayment },
@@ -22,7 +23,7 @@ export default {
     const route = useRoute()
     const progress = ref(50)
     const isLoading = ref(false)
-    console.log(route.query.id)
+    // console.log(route.query.id)
     const isPaid = ref(false)
     const order = ref(null)
     const getOrder = (id) => {
@@ -30,7 +31,7 @@ export default {
       api.getOrder(id)
         .then((res) => {
           order.value = res.data.order
-          console.log(order.value)
+          // console.log(order.value)
           isLoading.value = false
           if (order.value.is_paid === true) {
             isPaid.value = true
@@ -38,7 +39,8 @@ export default {
           }
         })
         .catch((err) => {
-          console.log(err)
+          // console.log(err)
+          notify(err.response.data.message)
           isLoading.value = false
         })
     }
@@ -46,14 +48,15 @@ export default {
       isLoading.value = true
       api.payOrder(route.query.id)
         .then((res) => {
-          console.log(res)
+          // console.log(res)
           isLoading.value = false
           if (res.data.success) isPaid.value = true
           progress.value = 100
         })
         .catch((err) => {
           isLoading.value = false
-          console.log(err)
+          // console.log(err)
+          notify(err.response.data.message)
         })
     }
     onMounted(() => {

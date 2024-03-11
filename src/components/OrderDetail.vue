@@ -54,7 +54,7 @@
         </tr>
         <tr>
           <th width="100">訂單金額</th>
-          <td>NT$ {{ userOrder.total }}</td>
+          <td>NT$ {{ delFloat(userOrder.total) }}</td>
         </tr>
         <tr>
           <th>付款狀態</th>
@@ -71,6 +71,7 @@
 <script>
 import CartItem from './CartItem.vue'
 import { ref, watch } from 'vue'
+import { delFloat } from '@/api/math.js'
 
 export default {
   emits: ['payOrder'],
@@ -85,12 +86,13 @@ export default {
 
     watch(() => props.order, () => {
       userOrder.value = props.order
-      console.log(userOrder.value)
+      // console.log(userOrder.value)
     })
     return {
       removeItem,
       userOrder,
-      payOrder
+      payOrder,
+      delFloat
     }
   }
 }

@@ -71,7 +71,7 @@
   <div class="container-fluid py-5 bg-light h-100">
     <div class="copyright text-center fs-5" style="color: #89b0ae">
       <p>羅傑之家 所有圖片皆來自於網路</p>
-      <p>Copyright © 2024</p>
+      <p>Copyright © 2024 <router-link to="/admin" class="link-success">進入後台</router-link></p>
     </div>
   </div>
   <!-- 購物車側邊欄 -->
@@ -112,7 +112,7 @@
       :cart="item" :isRemovable="removeItem" :isBtnDisabled="isBtnDisabled"
       @delete-item="deleteItem"/>
       <!-- 做成元件 -->
-      <p class="h4 text-success" v-if="cart.final_total !== cart.total">折扣價：NT$ {{ cart.final_total }}</p>
+      <p class="h4 text-success" v-if="cart.final_total !== cart.total">折扣價：NT$ {{ delFloat(cart.final_total) }}</p>
       <p class="h4" v-else>總計：NT$ {{ cart.total }}</p>
       <div class="check mt-3">
         <button type="button" class="btn btn-secondary w-100 fs-4"
@@ -124,7 +124,7 @@
   <UpArrow/>
 </template>
 <script>
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import CartItem from '@/components/CartItem.vue'
 import BottomBanner from '@/components/BottomBanner.vue'
@@ -133,6 +133,7 @@ import { storeToRefs } from 'pinia'
 import Swal from 'sweetalert2'
 import UpArrow from '@/components/UpArrow.vue'
 import { notify } from '@/api/toast.js'
+import { delFloat } from '@/api/math.js'
 
 export default {
   components: { BottomBanner, CartItem, UpArrow },
@@ -214,9 +215,6 @@ export default {
         }
       })
     }
-    onMounted(() => {
-      // getCart()
-    })
     return {
       isBtnDisabled,
       clearButtoonDisable,
@@ -229,7 +227,8 @@ export default {
       cart,
       goToCheck,
       getCart,
-      isLoading
+      isLoading,
+      delFloat
     }
   }
 }

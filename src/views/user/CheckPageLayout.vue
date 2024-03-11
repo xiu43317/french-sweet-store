@@ -37,7 +37,7 @@
             </div>
           </div>
           <div class="col-md-6 my-3 d-flex flex-row-reverse align-items-center">
-            <span class="fs-4 fw-bold text-success" v-if="cart.final_total !== cart.total">折扣價：NT$ {{ cart.final_total }}</span>
+            <span class="fs-4 fw-bold text-success" v-if="cart.final_total !== cart.total">折扣價：NT$ {{ delFloat(cart.final_total) }}</span>
             <span class="fs-4 fw-bold" v-else>總計：NT$ {{ cart.total }}</span>
           </div>
         </div>
@@ -138,6 +138,7 @@ import ProductOrderCard from '@/components/ProductOrderCard.vue'
 import { useCartStore } from '@/stores/cart.js'
 import { storeToRefs } from 'pinia'
 import api from '@/api/axios.js'
+import { delFloat } from '@/api/math.js'
 import { notify } from '@/api/toast.js'
 import Swal from 'sweetalert2'
 
@@ -238,7 +239,8 @@ export default {
       user,
       goToPayment,
       clearCart,
-      useMyCoupon
+      useMyCoupon,
+      delFloat
     }
   }
 }
