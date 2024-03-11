@@ -154,6 +154,7 @@ import 'swiper/css/pagination'
 // import required modules
 import { Autoplay, Navigation, Pagination } from 'swiper/modules'
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import NewsCard from '@/components/NewsCard.vue'
 import ClassicDessert from '@/components/ClassicDessert.vue'
 import ProductCard from '@/components/ProductCard.vue'
@@ -173,6 +174,7 @@ export default {
     const isLoading = ref(false)
     const dataReady = ref(false)
     const slider = ref(null)
+    const router = useRouter()
     const onSwiper = (swiper) => {
       slider.value = swiper
     }
@@ -208,10 +210,10 @@ export default {
         })
     }
     const goToDetail = (product) => {
-      tempProduct.value = product
-      setTimeout(() => {
-        modal.value.openModal()
-      }, 500)
+      router.push(`/product/${product.id}`)
+      // setTimeout(() => {
+      //   modal.value.openModal()
+      // }, 500)
     }
     onMounted(() => {
       getArticles(1)

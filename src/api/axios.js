@@ -6,6 +6,7 @@ export default {
   getFakeData: () => getFakeData(),
   getArticles: (page) => getArticles(page),
   getProducts: (page, category) => getProducts(page, category),
+  getProduct: (id) => getProduct(id),
   getArticle: (id) => getArticle(id),
   getCart: () => getCart(),
   createCart: (cart) => createCart(cart),
@@ -33,6 +34,9 @@ const getArticles = (page = 1) => {
 const getProducts = (page = 0, category = '') => {
   if (page === 0 && category === '') return axios.get(`${url}/api/${path}/products/all`)
   else return axios.get(`${url}/api/${path}/products?page=${page}&category=${category}`)
+}
+const getProduct = (id) => {
+  return axios.get(`${url}/api/${path}/product/${id}`)
 }
 const getArticle = (id) => {
   return axios.get(`${url}/api/${path}/article/${id}`)
