@@ -4,7 +4,7 @@
     <div class="h3 mt-4 text-center">新增文章</div>
     <div class="container">
       <div class="text-end mt-4">
-        <button class="btn btn-primary" type="button" @click="openModal(true)">
+        <button class="btn btn-primary" type="button" @click="openModal()">
           建立新的頁面
         </button>
       </div>
@@ -51,7 +51,7 @@
         </tbody>
       </table>
       <AdminPagination
-      :pages="pagination"
+      :pages="pages"
       @emit-page="getArticles"
       ref="pagination"
       />
@@ -71,10 +71,133 @@
 import ArticleModal from '@/modals/ArticleModal.vue'
 import DeleteModal from '@/modals/DeleteModal.vue'
 import AdminPagination from '@/components/BottomPagination.vue'
+import axios from 'axios'
+import { ref, onMounted } from 'vue'
 
 const url = import.meta.env.VITE_APP_API_URL
 const path = import.meta.env.VITE_APP_API_NAME
 export default {
+  components: { ArticleModal, DeleteModal, AdminPagination },
+  setup (props) {
+    const isLoading = ref(null)
+    const isNew = ref(false)
+    const pages = ref({})
+    const articles = ref([])
+    const tempArticle = ref({})
+    const articleModal = ref(null)
+    const deleteModal = ref(null)
+    const getArticles = () => {
+      isLoading.value = true
+      axios
+        .get(`${url}/api/${path}/admin/articles`)
+        .then((res) => {
+          articles.value = [...res.data.articles]
+          pages.value = { ...res.data.pagination }
+          isLoading.value = false
+          // console.log(pages.value)
+        })
+        .catch((err) => {
+          console.log(err)
+          isLoading.value = false
+        })
+    }
+    const date = (time) => {
+      const localDate = new Date(time * 1000)
+      return localDate.toLocaleDateString()
+    }
+    const openModal = () => {
+      isNew.value = true
+      tempArticle.value = { create_at: Math.floor(new Date() / 1000) }
+      articleModal.value.openModal()
+    }
+    const openDelArticleModal = (item) => {
+      isNew.value = false
+      tempArticle.value = item
+      deleteModal.value.openModal()
+    }
+    const getArticle = (id) => {
+      isLoading.value = true
+      isNew.value = false
+      axios.get(`${url}/api/${path}/admin/article/${id}`)
+        .then((res) => {
+          // console.log(res.data.article)
+          isLoading.value = false
+          tempArticle.value = res.data.article
+          articleModal.value.openModal()
+        })
+        .catch((err) => {
+          console.log(err)
+          isLoading.value = false
+        })
+    }
+    const updateArticle = (item) => {
+      isLoading.value = true
+      if (isNew.value === true) {
+        axios.post(`${url}/api/${path}/admin/article`, { data: item })
+          .then((res) => {
+            isLoading.value = false
+            alert(res.data.message)
+            articleModal.value.closeModal()
+            getArticles()
+          })
+          .catch((err) => {
+            console.log(err)
+            isLoading.value = false
+            alert(err.response.data.message)
+            articleModal.value.closeModal()
+          })
+      } else {
+        axios.put(`${url}/api/${path}/admin/article/${item.id}`, { data: item })
+          .then((res) => {
+            isLoading.value = false
+            alert(res.data.message)
+            articleModal.value.closeModal()
+            getArticles()
+          })
+          .catch((err) => {
+            console.log(err)
+            isLoading.value = false
+            alert(err.response.data.message)
+            articleModal.value.closeModal()
+          })
+      }
+    }
+    const deleteArticle = (id) => {
+      isLoading.value = true
+      axios
+        .delete(`${url}/api/${path}/admin/article/${id}`)
+        .then((res) => {
+          isLoading.value = false
+          alert(res.data.message)
+          getArticles()
+        })
+        .catch((err) => {
+          console.log(err.response.data.message)
+          isLoading.value = false
+          alert(err.response.data.message)
+        })
+    }
+    onMounted(() => {
+      getArticles()
+    })
+    return {
+      isLoading,
+      isNew,
+      pages,
+      articles,
+      tempArticle,
+      articleModal,
+      deleteModal,
+      getArticles,
+      date,
+      openModal,
+      openDelArticleModal,
+      getArticle,
+      updateArticle,
+      deleteArticle
+    }
+  }
+  /*
   data () {
     return {
       isLoading: false,
@@ -100,85 +223,86 @@ export default {
           this.isLoading = false
         })
     },
-    date (time) {
-      const localDate = new Date(time * 1000)
-      return localDate.toLocaleDateString()
-    },
-    openModal (isNew) {
-      this.isNew = isNew
-      this.tempArticle = { create_at: Math.floor(new Date() / 1000) }
-      this.$refs.articleModal.openModal()
-    },
-    getArticle (id) {
-      this.isLoading = true
-      this.isNew = false
-      this.$http.get(`${url}/api/${path}/admin/article/${id}`)
+  date (time) {
+    const localDate = new Date(time * 1000)
+    return localDate.toLocaleDateString()
+  },
+  openModal (isNew) {
+    this.isNew = isNew
+    this.tempArticle = { create_at: Math.floor(new Date() / 1000) }
+    this.$refs.articleModal.openModal()
+  },
+  getArticle (id) {
+    this.isLoading = true
+    this.isNew = false
+    this.$http.get(`${url}/api/${path}/admin/article/${id}`)
+      .then((res) => {
+        // console.log(res.data.article)
+        this.isLoading = false
+        this.tempArticle = res.data.article
+        this.$refs.articleModal.openModal()
+      })
+      .catch((err) => {
+        console.log(err)
+        this.isLoading = false
+      })
+  },
+  openDelArticleModal (item) {
+    this.isNew = false
+    this.tempArticle = item
+    this.$refs.deleteModal.openModal()
+  },
+  updateArticle (item) {
+    this.isLoading = true
+    if (this.isNew === true) {
+      this.$http.post(`${url}/api/${path}/admin/article`, { data: item })
         .then((res) => {
-          // console.log(res.data.article)
           this.isLoading = false
-          this.tempArticle = res.data.article
-          this.$refs.articleModal.openModal()
+          alert(res.data.message)
+          this.$refs.articleModal.closeModal()
+          this.getArticles()
         })
         .catch((err) => {
           console.log(err)
           this.isLoading = false
+          alert(err.response.data.message)
+          this.$refs.articleModal.closeModal()
         })
-    },
-    openDelArticleModal (item) {
-      this.isNew = false
-      this.tempArticle = item
-      this.$refs.deleteModal.openModal()
-    },
-    updateArticle (item) {
-      this.isLoading = true
-      if (this.isNew === true) {
-        this.$http.post(`${url}/api/${path}/admin/article`, { data: item })
-          .then((res) => {
-            this.isLoading = false
-            alert(res.data.message)
-            this.$refs.articleModal.closeModal()
-            this.getArticles()
-          })
-          .catch((err) => {
-            console.log(err)
-            this.isLoading = false
-            alert(err.response.data.message)
-            this.$refs.articleModal.closeModal()
-          })
-      } else {
-        this.$http.put(`${url}/api/${path}/admin/article/${item.id}`, { data: item })
-          .then((res) => {
-            this.isLoading = false
-            alert(res.data.message)
-            this.$refs.articleModal.closeModal()
-            this.getArticles()
-          })
-          .catch((err) => {
-            console.log(err)
-            this.isLoading = false
-            alert(err.response.data.message)
-            this.$refs.articleModal.closeModal()
-          })
-      }
-    },
-    deleteArticle (id) {
-      this.isLoading = true
-      this.$http
-        .delete(`${url}/api/${path}/admin/article/${id}`)
+    } else {
+      this.$http.put(`${url}/api/${path}/admin/article/${item.id}`, { data: item })
         .then((res) => {
           this.isLoading = false
           alert(res.data.message)
+          this.$refs.articleModal.closeModal()
           this.getArticles()
         })
         .catch((err) => {
-          console.log(err.response.data.message)
+          console.log(err)
           this.isLoading = false
           alert(err.response.data.message)
+          this.$refs.articleModal.closeModal()
         })
     }
+  },
+  deleteArticle (id) {
+    this.isLoading = true
+    this.$http
+      .delete(`${url}/api/${path}/admin/article/${id}`)
+      .then((res) => {
+        this.isLoading = false
+        alert(res.data.message)
+        this.getArticles()
+      })
+      .catch((err) => {
+        console.log(err.response.data.message)
+        this.isLoading = false
+        alert(err.response.data.message)
+      })
+  }
   },
   mounted () {
     this.getArticles()
   }
+  */
 }
 </script>

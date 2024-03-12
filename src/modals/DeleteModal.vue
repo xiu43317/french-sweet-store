@@ -43,8 +43,35 @@
 </template>
 <script>
 import { Modal } from 'bootstrap'
+import { ref, onMounted } from 'vue'
 
 export default {
+  props: ['product'],
+  emits: ['deleteItem'],
+  setup (props, ctx) {
+    let delModal
+    const delProductModal = ref(null)
+    const deleteProduct = () => {
+      ctx.emit('deleteItem', props.product.id)
+    }
+    const openModal = () => {
+      delModal.show()
+    }
+    const hideModal = () => {
+      delModal.hide()
+    }
+    onMounted(() => {
+      delModal = new Modal(delProductModal.value)
+    })
+    return {
+      delProductModal,
+      deleteProduct,
+      openModal,
+      hideModal
+    }
+  }
+
+  /*
   data () {
     return {
       delModal: ''
@@ -65,5 +92,6 @@ export default {
   mounted () {
     this.delModal = new Modal(document.querySelector('#delProductModal'))
   }
+  */
 }
 </script>

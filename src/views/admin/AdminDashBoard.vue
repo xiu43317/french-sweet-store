@@ -30,8 +30,48 @@
   <router-view v-if="checkSuccess"></router-view>
 </template>
 <script>
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import axios from 'axios'
 const url = import.meta.env.VITE_APP_API_URL
+
 export default {
+  setup (props) {
+    const checkSuccess = ref(false)
+    const router = useRouter()
+    const checkLogin = () => {
+      const token = document.cookie.replace(/(?:(?:^|.*;\s*)hexToken\s*=\s*([^;]*).*$)|^.*$/, '$1')
+      axios.interceptors.request.use(function (config) {
+        config.headers.Authorization = token
+        return config
+      })
+      axios
+        .post(`${url}/api/user/check`)
+        .then(() => {
+          checkSuccess.value = true
+        })
+        .catch((error) => {
+          console.dir(error)
+          alert(error.response.data.message)
+          router.push('/login')
+        })
+    }
+    const signOut = () => {
+      document.cookie = 'hexToken=;expires=;'
+      alert('已登出')
+      router.push('/login')
+    }
+    onMounted(() => {
+      checkLogin()
+    })
+    return {
+      checkLogin,
+      checkSuccess,
+      signOut,
+      router
+    }
+  }
+  /*
   data () {
     return {
       checkSuccess: false
@@ -61,5 +101,6 @@ export default {
   mounted () {
     this.checkLogin()
   }
+  */
 }
 </script>

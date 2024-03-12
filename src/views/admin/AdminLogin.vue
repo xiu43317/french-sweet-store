@@ -31,7 +31,6 @@
               <button
                 class="btn btn-lg btn-primary w-100 mt-3"
                 type="submit"
-                @click.prevent="login"
               >
                 登入
               </button>
@@ -53,7 +52,41 @@
     </style>
 <script>
 import axios from 'axios'
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+
 export default {
+  setup (props) {
+    const url = import.meta.env.VITE_APP_API_URL
+    const emailInput = ref('')
+    const pwInput = ref('')
+    const router = useRouter()
+    const login = () => {
+      const username = emailInput.value
+      const password = pwInput.value
+      const user = {
+        username,
+        password
+      }
+      axios.post(`${url}/admin/signin`, user).then((res) => {
+        const {
+          token,
+          expired
+        } = res.data
+        document.cookie = `hexToken=${token};expires=${new Date(expired)};`
+        alert(res.data.message)
+        router.push('/admin/products')
+      }).catch((error) => {
+        alert(error.message)
+      })
+    }
+    return {
+      emailInput,
+      pwInput,
+      login
+    }
+  }
+/*
   data () {
     return {
       emailInput: '',
@@ -83,5 +116,6 @@ export default {
       })
     }
   }
+*/
 }
 </script>

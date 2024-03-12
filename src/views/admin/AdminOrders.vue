@@ -3,7 +3,7 @@
   <div class="h3 text-center mt-4">訂單列表</div>
   <div class="container">
   <div class="text-end">
-    <button type="button" class="btn btn-danger mt-3" @click="this.$refs.deleteAllModal.openModal()">刪除全部訂單</button>
+    <button type="button" class="btn btn-danger mt-3" @click="openDelAllModal()">刪除全部訂單</button>
   </div>
     <table class="table mt-4">
       <thead>
@@ -68,7 +68,7 @@
       </tbody>
     </table>
     <AdminPagination
-      :pages="pagination"
+      :pages="pages"
       @emit-page="getOrders"
       ref="pagination"
     />
@@ -92,10 +92,121 @@ import OrderModal from '@/modals/OrderModal.vue'
 import DeleteModal from '@/modals/DeleteModal.vue'
 import DeleteAllModal from '@/modals/DeleteAllModal.vue'
 import AdminPagination from '@/components/BottomPagination.vue'
+import { ref, onMounted } from 'vue'
+import axios from 'axios'
 
 const url = import.meta.env.VITE_APP_API_URL
 const path = import.meta.env.VITE_APP_API_NAME
 export default {
+  components: { DeleteModal, OrderModal, DeleteAllModal, AdminPagination },
+  setup (props) {
+    const orders = ref([])
+    const isLoading = ref(false)
+    const tempOrder = ref({})
+    const deleteAllModal = ref(null)
+    const pages = ref({})
+    const deleteModal = ref(null)
+    const orderModal = ref(null)
+    const getOrders = () => {
+      isLoading.value = true
+      axios
+        .get(`${url}/api/${path}/admin/orders`)
+        .then((res) => {
+          orders.value = [...res.data.orders]
+          pages.value = { ...res.data.pagination }
+          isLoading.value = false
+        })
+        .catch((err) => {
+          console.log(err.response.data.message)
+          isLoading.value = false
+        })
+    }
+    const date = (time) => {
+      const localDate = new Date(time * 1000)
+      return localDate.toLocaleDateString()
+    }
+    const currency = (num) => {
+      const n = parseInt(num, 10)
+      return `${n.toFixed(0).replace(/./g, (c, i, a) => (i && c !== '.' && ((a.length - i) % 3 === 0) ? `, ${c}`.replace(/\s/g, '') : c))}`
+    }
+    const openDelOrderModal = (item) => {
+      tempOrder.value = item
+      deleteModal.value.openModal()
+    }
+    const updatePaid = (item) => {
+      axios.put(`${url}/api/${path}/admin/order/${item.id}`, { data: item })
+        .then((res) => {
+          alert(res.data.message)
+          orderModal.value.closeModal()
+          getOrders()
+        })
+        .catch((err) => {
+          console.log(err)
+          alert(err.response.data.message)
+          orderModal.value.closeModal()
+        })
+    }
+    const deleteOrder = (id) => {
+      isLoading.value = true
+      axios.delete(`${url}/api/${path}/admin/order/${id}`)
+        .then((res) => {
+          isLoading.value = false
+          alert(res.data.message + '該訂單')
+          deleteModal.value.hideModal()
+          getOrders()
+        })
+        .catch((err) => {
+          isLoading.value = false
+          alert(err.response.data.message)
+          deleteModal.value.hideModal()
+        })
+    }
+    const openModal = (item) => {
+      tempOrder.value = item
+      orderModal.value.openModal()
+    }
+    const deleteAllOrders = () => {
+      isLoading.value = true
+      axios.delete(`${url}/api/${path}/admin/orders/all`)
+        .then((res) => {
+          alert(res.data.message)
+          isLoading.value = false
+          deleteAllModal.value.closeModal()
+          getOrders()
+        })
+        .catch((err) => {
+          alert(err.response.data.message)
+          isLoading.value = false
+          deleteAllModal.value.closeModal()
+        })
+    }
+    const openDelAllModal = () => {
+      deleteAllModal.value.openModal()
+    }
+    onMounted(() => {
+      getOrders()
+    })
+    return {
+      orders,
+      isLoading,
+      tempOrder,
+      pages,
+      getOrders,
+      date,
+      currency,
+      openDelOrderModal,
+      updatePaid,
+      deleteOrder,
+      openModal,
+      deleteAllOrders,
+      orderModal,
+      deleteModal,
+      deleteAllModal,
+      openDelAllModal
+    }
+  }
+
+  /*
   data () {
     return {
       orders: [],
@@ -181,5 +292,6 @@ export default {
     this.getOrders()
   },
   components: { DeleteModal, OrderModal, DeleteAllModal, AdminPagination }
+  */
 }
 </script>

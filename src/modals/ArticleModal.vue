@@ -10,7 +10,7 @@
   >
     <div class="modal-dialog modal-xl" role="document">
       <div class="modal-content border-0">
-        <div class="modal-header bg-dark text-white">
+        <div class="modal-header bg-secondary text-white">
           <h5 class="modal-title" id="exampleModalLabel">
             <span v-if="isNew">新增貼文</span>
             <span v-else>編輯貼文</span>
@@ -67,7 +67,7 @@
                   type="date"
                   class="form-control"
                   id="create_at"
-                  v-model="create_at"
+                  v-model="createAt"
                 />
               </div>
             </div>
@@ -156,7 +156,7 @@
           <button
             type="button"
             class="btn btn-primary"
-            @click="$emit('update-article', tempArticle)"
+            @click="updateArticle"
           >
             確認
           </button>
@@ -172,11 +172,85 @@
 </style>
 <script>
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
+import axios from 'axios'
 import { Modal } from 'bootstrap'
+import { ref, onMounted, watch } from 'vue'
 const url = import.meta.env.VITE_APP_API_URL
 const path = import.meta.env.VITE_APP_API_NAME
 
 export default {
+  props: ['article', 'isNew'],
+  emits: ['update-article'],
+  setup (props, context) {
+    const updateArticle = () => {
+      context.emit('update-article', tempArticle.value)
+    }
+    const editor = ClassicEditor
+    const editorConfig = {
+      toolbar: ['heading', 'bold', 'italic', '|', 'link']
+    }
+    const fileInput = ref(null)
+    const formFile = ref(null)
+    const modal = ref(null)
+    const articleModal = ref('')
+    const createAt = ref(0)
+    const tempArticle = ref({
+      tag: []
+    })
+    const openModal = () => {
+      articleModal.value.show()
+    }
+    const closeModal = () => {
+      articleModal.value.hide()
+    }
+    const uploadFile = () => {
+      const file = fileInput.value.files[0]
+      const formData = new FormData()
+      formData.append('file-to-upload', file)
+      axios
+        .post(`${url}/api/${path}/admin/upload`, formData)
+        .then((res) => {
+          tempArticle.value.imageUrl = res.data.imageUrl
+        })
+        .catch((err) => {
+          // console.dir(err)
+          alert(err.response.data.message)
+        })
+    }
+    watch(() => props.article, () => {
+      tempArticle.value = {
+        ...props.article,
+        tag: props.article.tag || [],
+        isPublic: props.article.isPublic || false
+      }
+      createAt.value = new Date(tempArticle.value.create_at * 1000)
+        .toISOString()
+        .split('T')[0]
+    })
+    watch(createAt, () => {
+      tempArticle.value.create_at = Math.floor(new Date(createAt.value) / 1000)
+    })
+    onMounted(() => {
+      articleModal.value = new Modal(modal.value)
+      fileInput.value = formFile.value
+      fileInput.value.addEventListener('change', uploadFile)
+    })
+    return {
+      modal,
+      fileInput,
+      formFile,
+      editor,
+      editorConfig,
+      articleModal,
+      createAt,
+      tempArticle,
+      openModal,
+      closeModal,
+      updateArticle
+    }
+  }
+
+  /*
   data () {
     return {
       create_at: 0,
@@ -235,6 +309,6 @@ export default {
     this.articleModal = new Modal(this.$refs.modal)
     this.fileInput = this.$refs.formFile
     this.fileInput.addEventListener('change', this.uploadFile)
-  }
+  } */
 }
 </script>

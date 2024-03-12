@@ -20,7 +20,7 @@
             aria-label="Close"
           ></button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body text-start">
           是否刪除
           <strong class="text-danger">{{ coupon.title }}</strong>
           優惠券(刪除後將無法恢復)。
@@ -43,7 +43,34 @@
 </template>
 <script>
 import { Modal } from 'bootstrap'
+import { ref, onMounted } from 'vue'
 export default {
+  props: ['coupon'],
+  emits: ['deleteCoupon'],
+  setup (props, context) {
+    let delModal
+    const delCouponModal = ref(null)
+    const openModal = () => {
+      delModal.show()
+    }
+    const closeModal = () => {
+      delModal.hide()
+    }
+    const deleteCoupon = () => {
+      context.emit('deleteCoupon', props.coupon.id)
+    }
+    onMounted(() => {
+      delModal = new Modal(delCouponModal.value)
+    })
+    return {
+      openModal,
+      closeModal,
+      delModal,
+      deleteCoupon,
+      delCouponModal
+    }
+  }
+  /*
   data () {
     return {
       myCoupon: {},
@@ -65,5 +92,6 @@ export default {
   mounted () {
     this.delModal = new Modal(this.$refs.delCouponModal)
   }
+  */
 }
 </script>

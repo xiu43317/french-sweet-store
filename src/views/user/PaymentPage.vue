@@ -52,6 +52,7 @@ export default {
           isLoading.value = false
           if (res.data.success) isPaid.value = true
           progress.value = 100
+          window.scrollTo(0, 0)
         })
         .catch((err) => {
           isLoading.value = false

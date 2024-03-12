@@ -76,7 +76,7 @@
     ></delete-product>
     <!-- pagination -->
     <admin-pagination
-      :pages="pagination"
+      :pages="pages"
       @emit-page="getProducts"
       ref="pagination"
     >
@@ -87,9 +87,109 @@
 import editProduct from '@/modals/Editmodal.vue'
 import deleteProduct from '@/modals/DeleteModal.vue'
 import AdminPagination from '@/components/BottomPagination.vue'
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import axios from 'axios'
+
 const url = import.meta.env.VITE_APP_API_URL
 const path = import.meta.env.VITE_APP_API_NAME
 export default {
+  components: { editProduct, deleteProduct, AdminPagination },
+  setup (props) {
+    const tempProduct = ref({
+      imagesUrl: []
+    })
+    const products = ref([])
+    const isNew = ref(true)
+    const pages = ref({})
+    const productModal = ref(null)
+    const delProductModal = ref(null)
+    const isLoading = ref(false)
+    const currentPage = ref(1)
+    const router = useRouter()
+    const checkLogin = () => {
+      axios
+        .post(`${url}/api/user/check`)
+        .then((_res) => {
+          getProducts()
+        })
+        .catch((_error) => {
+          router.push('/login')
+        })
+    }
+    const getProducts = (page = 1) => {
+      isLoading.value = true
+      axios
+        .get(`${url}/api/${path}/admin/products?page=${page}`)
+        .then((res) => {
+          // console.log(res.data.products);
+          products.value = res.data.products
+          pages.value = res.data.pagination
+          isLoading.value = false
+          currentPage.value = page
+        })
+        .catch((error) => {
+          console.dir(error)
+          isLoading.value = false
+        })
+    }
+    const openModal = (status, item = {}) => {
+      if (status === 'new') {
+        tempProduct.value = {
+          imagesUrl: []
+        }
+        isNew.value = true
+        setTimeout(() => {
+          productModal.value.openModal()
+        }, 500)
+      } else if (status === 'edit') {
+        tempProduct.value = { ...item }
+        if (!tempProduct.value.imagesUrl) {
+          tempProduct.value.imagesUrl = []
+        }
+        isNew.value = false
+        setTimeout(() => {
+          productModal.value.openModal()
+        }, 500)
+      } else if (status === 'delete') {
+        tempProduct.value = item
+        setTimeout(() => {
+          delProductModal.value.openModal()
+        }, 500)
+      }
+    }
+    const deleteProduct = (id) => {
+      axios
+        .delete(`${url}/api/${path}/admin/product/${id}`)
+        .then((res) => {
+          alert(res.data.message)
+          delProductModal.value.hideModal()
+          getProducts(currentPage.value)
+        })
+        .catch((error) => {
+          alert(error.response.data.message)
+          delProductModal.value.hideModal()
+        })
+    }
+    onMounted(() => {
+      getProducts()
+    })
+    return {
+      products,
+      isNew,
+      pages,
+      tempProduct,
+      productModal,
+      delProductModal,
+      isLoading,
+      currentPage,
+      checkLogin,
+      getProducts,
+      openModal,
+      deleteProduct
+    }
+  }
+  /*
   data () {
     return {
       products: [],
@@ -176,5 +276,6 @@ export default {
     this.delModel = this.$refs.delProductModal
   },
   components: { editProduct, deleteProduct, AdminPagination }
+  */
 }
 </script>

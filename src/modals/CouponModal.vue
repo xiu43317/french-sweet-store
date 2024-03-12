@@ -9,8 +9,8 @@
 >
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">
+      <div class="modal-header bg-secondary">
+        <h5 class="modal-title text-white">
           <span v-show="isNew">新增優惠券</span>
           <span v-show="!isNew">更新優惠券</span>
         </h5>

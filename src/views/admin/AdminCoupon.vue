@@ -61,7 +61,7 @@
     </table>
     <!-- pagination -->
     <AdminPagination
-      :pages="pagination"
+      :pages="pages"
       @emit-page="getCoupons"
       ref="pagination"
     >
@@ -72,9 +72,132 @@
 import CouponModal from '@/modals/CouponModal.vue'
 import CouponDelModal from '@/modals/CouponDelModal.vue'
 import AdminPagination from '@/components/BottomPagination.vue'
+import { ref, onMounted } from 'vue'
+import axios from 'axios'
+
 const url = import.meta.env.VITE_APP_API_URL
 const path = import.meta.env.VITE_APP_API_NAME
 export default {
+  components: { CouponModal, CouponDelModal, AdminPagination },
+  setup (props) {
+    const coupons = ref([])
+    const pages = ref({})
+    const tempCoupon = ref({})
+    const isLoading = ref(false)
+    const isNew = ref(false)
+    const couponModal = ref(null)
+    const delCouponModal = ref(null)
+    const emptyCoupon = ref({
+      title: '',
+      is_enabled: 0,
+      code: '',
+      due_date: new Date() / 1000,
+      percent: '',
+      id: ''
+    })
+    const openModal = (status, coupon = {}) => {
+      if (status === 'new') {
+        isNew.value = true
+        tempCoupon.value = { ...emptyCoupon.value }
+        couponModal.value.openModal()
+      } else if (status === 'delete') {
+        isNew.value = false
+        tempCoupon.value = coupon
+        delCouponModal.value.openModal()
+      } else if (status === 'edit') {
+        isNew.value = false
+        tempCoupon.value = { ...coupon }
+        couponModal.value.openModal()
+      }
+    }
+    const closeModal = () => {
+      couponModal.value.closeModal()
+      delCouponModal.value.closeModal()
+    }
+    const getCoupons = () => {
+      isLoading.value = true
+      axios.get(`${url}/api/${path}/admin/coupons`)
+        .then((res) => {
+          coupons.value = [...res.data.coupons]
+          pages.value = { ...res.data.pagination }
+          coupons.value.forEach((item) => {
+            const date = new Date(item.due_date * 1000).toISOString().split('T')[0]
+            item.formatDate = date
+          })
+          isLoading.value = false
+        })
+        .catch((err) => {
+          // console.dir(err)
+          alert(err.message)
+          isLoading.value = false
+        })
+    }
+    const deleteCoupon = (id) => {
+      axios.delete(`${url}/api/${path}/admin/coupon/${id}`)
+        .then((res) => {
+          alert(res.data.message)
+          delCouponModal.value.closeModal()
+          getCoupons()
+        }).catch((err) => {
+          alert(err.response.data.message)
+          delCouponModal.value.closeModal()
+        })
+    }
+    const updateCoupon = (coupon) => {
+      const newCoupon = {
+        title: coupon.title,
+        is_enabled: coupon.is_enabled,
+        percent: coupon.percent,
+        due_date: coupon.due_date / 1000,
+        code: coupon.code
+      }
+      if (isNew.value) {
+        axios.post(`${url}/api/${path}/admin/coupon`, { data: newCoupon })
+          .then((res) => {
+            // console.log(res)
+            alert(res.data.message)
+            closeModal()
+            getCoupons()
+          })
+          .catch((err) => {
+            console.log(err)
+            alert(err.response.data.message)
+          })
+      } else {
+        axios.put(`${url}/api/${path}/admin/coupon/${coupon.id}`, { data: newCoupon })
+          .then((res) => {
+            // console.log(res)
+            alert(res.data.message)
+            closeModal()
+            getCoupons()
+          })
+          .catch((err) => {
+            // console.log(err)
+            alert(err.response.data.message)
+          })
+      }
+    }
+    onMounted(() => {
+      getCoupons()
+    })
+    return {
+      coupons,
+      pages,
+      tempCoupon,
+      isLoading,
+      isNew,
+      emptyCoupon,
+      openModal,
+      couponModal,
+      delCouponModal,
+      closeModal,
+      getCoupons,
+      deleteCoupon,
+      updateCoupon
+    }
+  }
+
+  /*
   data () {
     return {
       coupons: [],
@@ -183,6 +306,6 @@ export default {
   },
   mounted () {
     this.getCoupons()
-  }
+  } */
 }
 </script>

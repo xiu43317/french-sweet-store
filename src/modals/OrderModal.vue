@@ -3,7 +3,7 @@
     aria-hidden="true" ref="modal">
     <div class="modal-dialog modal-xl" role="document">
       <div class="modal-content border-0">
-        <div class="modal-header bg-dark text-white">
+        <div class="modal-header bg-secondary text-white">
           <h5 class="modal-title" id="exampleModalLabel">
             <span>訂單細節</span>
           </h5>
@@ -118,7 +118,48 @@
 </template>
 <script>
 import { Modal } from 'bootstrap'
+import { ref, watch, onMounted } from 'vue'
 export default {
+  props: ['selectedOrder'],
+  setup (props) {
+    const modal = ref(null)
+    const tempOrder = ref({
+      user: {}
+    })
+    let orderModal
+    const date = (time) => {
+      const localDate = new Date(time * 1000)
+      return localDate.toLocaleDateString()
+    }
+    const currency = (num) => {
+      const n = parseInt(num, 10)
+      return `${n.toFixed(0).replace(/./g, (c, i, a) => (i && c !== '.' && ((a.length - i) % 3 === 0) ? `, ${c}`.replace(/\s/g, '') : c))}`
+    }
+    const openModal = () => {
+      tempOrder.value = { ...props.selectedOrder }
+      orderModal.show()
+    }
+    const closeModal = () => {
+      orderModal.hide()
+    }
+    watch(() => props.selectedOrder, () => {
+      tempOrder.value = { ...props.selectedOrder }
+    })
+    onMounted(() => {
+      orderModal = new Modal(modal.value)
+    })
+    return {
+      tempOrder,
+      date,
+      currency,
+      openModal,
+      orderModal,
+      closeModal,
+      modal
+    }
+  }
+
+  /*
   data () {
     return {
       tempOrder: {
@@ -153,5 +194,6 @@ export default {
   mounted () {
     this.orderModal = new Modal(this.$refs.modal)
   }
+  */
 }
 </script>

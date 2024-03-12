@@ -1,7 +1,7 @@
 <template>
   <div
     id="productModal"
-    ref="Modal"
+    ref="modal"
     class="modal fade"
     tabindex="-1"
     aria-labelledby="productModalLabel"
@@ -9,7 +9,7 @@
   >
     <div class="modal-dialog modal-xl">
       <div class="modal-content border-0">
-        <div class="modal-header bg-dark text-white">
+        <div class="modal-header bg-secondary text-white">
           <h5 id="productModalLabel" class="modal-title">
             <span v-if="isNew">新增產品</span>
             <span v-else>編輯產品</span>
@@ -242,9 +242,116 @@
 </template>
 <script>
 import { Modal } from 'bootstrap'
+import { ref, onMounted, watch } from 'vue'
+import axios from 'axios'
+
 const url = import.meta.env.VITE_APP_API_URL
 const path = import.meta.env.VITE_APP_API_NAME
 export default {
+  props: ['isNew', 'tempProduct', 'currentPage'],
+  emits: ['getProducts'],
+  setup (props, context) {
+    let myModal
+    const fileInput = ref(null)
+    const formFile = ref(null)
+    const product = ref({})
+    const myNew = ref(false)
+    const modal = ref(null)
+    const updateProduct = () => {
+      if (props.isNew) {
+        axios
+          .post(`${url}/api/${path}/admin/product`, { data: props.tempProduct })
+          .then((res) => {
+            alert(res.data.message)
+            getProducts()
+            hideModal()
+          })
+          .catch((error) => {
+            alert(error.response.data.message)
+            // this.hideModal()
+          })
+      } else {
+        axios
+          .put(`${url}/api/${path}/admin/product/${props.tempProduct.id}`, {
+            data: props.tempProduct
+          })
+          .then((res) => {
+            alert(res.data.message)
+            getProducts()
+            hideModal()
+          })
+          .catch((error) => {
+            alert(error.response.data.message)
+            // this.hideModal();
+          })
+      }
+    }
+    const createImages = () => {
+      product.value.imagesUrl = []
+      product.value.imagesUrl.push('')
+    }
+    const getProducts = () => {
+      context.emit('getProducts', props.currentPage)
+    }
+    const openModal = () => {
+      product.value = props.tempProduct
+      myModal.show()
+    }
+    const hideModal = () => {
+      myModal.hide()
+    }
+    const uploadFile = () => {
+      const file = fileInput.value.files[0]
+      const formData = new FormData()
+      formData.append('file-to-upload', file)
+      this.$http
+        .post(`${url}/api/${path}/admin/upload`, formData)
+        .then((res) => {
+          product.value.imageUrl = res.data.imageUrl
+        })
+        .catch((err) => {
+          alert(err.response.data.message)
+        })
+    }
+    const uploadFiles = (key) => {
+      const multiImgs = document.querySelectorAll('.uploadImages')
+      const file = multiImgs[key].files[0]
+      const formData = new FormData()
+      formData.append('file-to-upload', file)
+      axios
+        .post(`${url}/api/${path}/admin/upload`, formData)
+        .then((res) => {
+          product.value.imagesUrl[key] = res.data.imageUrl
+        })
+        .catch((err) => {
+          alert(err.response.data.message)
+        })
+    }
+    watch(() => props.isNew, () => {
+      myNew.value = props.isNew
+    })
+    onMounted(() => {
+      myModal = new Modal(modal.value, {
+        keyboard: false
+      })
+      fileInput.value = formFile.value
+      fileInput.value.addEventListener('change', uploadFile)
+    })
+    return {
+      product,
+      myNew,
+      updateProduct,
+      createImages,
+      openModal,
+      hideModal,
+      uploadFile,
+      uploadFiles,
+      modal,
+      formFile,
+      fileInput
+    }
+  }
+  /*
   data () {
     return {
       product: {},
@@ -345,5 +452,6 @@ export default {
     this.fileInput = this.$refs.formFile
     this.fileInput.addEventListener('change', this.uploadFile)
   }
+  */
 }
 </script>
