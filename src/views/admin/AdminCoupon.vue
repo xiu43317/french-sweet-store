@@ -7,14 +7,11 @@
         建立新的優惠卷
       </button>
       <!-- 新增優惠卷Modal -->
-      <coupon-modal ref="couponModal"
+      <CouponModal ref="couponModal"
       @update="updateCoupon"
       :isNew="isNew"
-      :coupon="tempCoupon"></coupon-modal>
-      <!-- 刪除優惠券Modal -->
-      <CouponDelModal ref="delCouponModal"
-      @deleteCoupon="deleteCoupon"
-      :coupon="tempCoupon"></CouponDelModal>
+      :coupon="tempCoupon"
+      />
     </div>
     <table class="table mt-4">
       <thead>
@@ -59,18 +56,24 @@
         </tr>
       </tbody>
     </table>
+    <!-- 刪除優惠券Modal -->
+    <DeleteModal
+      :product="tempCoupon"
+      @delete-item="deleteCoupon"
+      ref="delCouponModal"
+    />
     <!-- pagination -->
     <AdminPagination
       :pages="pages"
       @emit-page="getCoupons"
       ref="pagination"
-    >
-    </AdminPagination>
+    />
   </div>
 </template>
 <script>
 import CouponModal from '@/modals/CouponModal.vue'
-import CouponDelModal from '@/modals/CouponDelModal.vue'
+// import CouponDelModal from '@/modals/CouponDelModal.vue'
+import DeleteModal from '@/modals/DeleteModal.vue'
 import AdminPagination from '@/components/BottomPagination.vue'
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
@@ -78,7 +81,7 @@ import axios from 'axios'
 const url = import.meta.env.VITE_APP_API_URL
 const path = import.meta.env.VITE_APP_API_NAME
 export default {
-  components: { CouponModal, CouponDelModal, AdminPagination },
+  components: { CouponModal, AdminPagination, DeleteModal },
   setup (props) {
     const coupons = ref([])
     const pages = ref({})
@@ -112,7 +115,7 @@ export default {
     }
     const closeModal = () => {
       couponModal.value.closeModal()
-      delCouponModal.value.closeModal()
+      delCouponModal.value.hideModal()
     }
     const getCoupons = () => {
       isLoading.value = true
@@ -136,11 +139,11 @@ export default {
       axios.delete(`${url}/api/${path}/admin/coupon/${id}`)
         .then((res) => {
           alert(res.data.message)
-          delCouponModal.value.closeModal()
+          delCouponModal.value.hideModal()
           getCoupons()
         }).catch((err) => {
-          alert(err.response.data.message)
-          delCouponModal.value.closeModal()
+          alert(err.message)
+          delCouponModal.value.hideModal()
         })
     }
     const updateCoupon = (coupon) => {

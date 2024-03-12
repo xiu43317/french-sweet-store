@@ -169,12 +169,14 @@ export default {
         .then((res) => {
           isLoading.value = false
           alert(res.data.message)
+          deleteModal.value.hideModal()
           getArticles()
         })
         .catch((err) => {
           console.log(err.response.data.message)
           isLoading.value = false
           alert(err.response.data.message)
+          deleteModal.value.hideModal()
         })
     }
     onMounted(() => {
