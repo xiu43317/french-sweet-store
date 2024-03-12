@@ -1,11 +1,13 @@
 <template>
   <myLoading :active="isLoading"></myLoading>
   <!-- Banner -->
-  <div class="hero-image" data-aos="zoom-out">
-    <div class="hero-text">
-      <h1>歡迎光臨羅傑之家</h1>
-      <p class="fs-4">我們提供法國道地的經典甜點</p>
-      <router-link to="/aboutUs" class="rounded fs-5">關於我們</router-link>
+  <div class="container-fluid">
+    <div class="hero-image" data-aos="zoom-in">
+      <div class="hero-text">
+        <h1>歡迎光臨羅傑之家</h1>
+        <p class="fs-4">我們提供法國道地的經典甜點</p>
+        <router-link to="/aboutUs" class="rounded fs-5">關於我們</router-link>
+      </div>
     </div>
   </div>
   <div class="container">
