@@ -41,7 +41,7 @@ export default {
     const router = useRouter()
     const checkLogin = () => {
       const token = document.cookie.replace(/(?:(?:^|.*;\s*)hexToken\s*=\s*([^;]*).*$)|^.*$/, '$1')
-      axios.defaults.headers.common.Authorization = `Bearer ${token}`
+      axios.defaults.headers.common.Authorization = token
       axios
         .post(`${url}/api/user/check`)
         .then(() => {
