@@ -1,8 +1,8 @@
 <template>
   <div class="row mb-3 position-relative zoom-in">
-    <div class="col-lg-4">
+    <div class="col-lg-4 rounded g-0">
       <img
-        class="img-fluid object-fit-cover rounded"
+        class="img-fluid object-fit-cover rounded w-100"
         :src="tempArticle.imageUrl"
         alt=""
       />
@@ -30,6 +30,9 @@
 }
 .zoom-in img{
   transition: 0.5s;
+}
+.zoom-in .col-lg-4{
+  overflow: hidden;
 }
 </style>
 <script>
