@@ -1,14 +1,16 @@
 <template>
   <div class="row mb-3 position-relative zoom-in">
-    <div class="col-lg-4 rounded g-0">
-      <img
-        class="img-fluid object-fit-cover rounded w-100"
-        :src="tempArticle.imageUrl"
-        alt=""
-      />
+    <div class="col-lg-4 rounded">
+      <div class="frame rounded">
+        <img
+          class="img-fluid object-fit-cover rounded"
+          :src="tempArticle.imageUrl"
+          alt=""
+        />
+      </div>
     </div>
     <div
-      class="col-lg-8 d-flex flex-column justify-content-center mt-2 mt-lg-0"
+      class="col-lg-8 d-flex flex-column justify-content-center mt-2 mt-lg-0 ps-lg-5"
     >
       <h3 class="mb-3">{{ tempArticle.title }}</h3>
       <div>
@@ -31,7 +33,7 @@
 .zoom-in img{
   transition: 0.5s;
 }
-.zoom-in .col-lg-4{
+.zoom-in .frame{
   overflow: hidden;
 }
 </style>
