@@ -174,12 +174,11 @@ export default {
         confirmButtonColor: 'red',
         cancelButtonColor: 'gray',
         confirmButtonText: '確定',
-        confirmButton: false,
         cancelButtonText: '取消'
       }).then(async (result) => {
         if (result.isConfirmed) {
           changeAddStatus(true)
-          console.log('確認')
+          // console.log('確認')
           await deleteAllCart()
             .then((res) => {
               notify(true, `全部${res.data.message}`)
@@ -191,7 +190,7 @@ export default {
           await getCart()
           changeAddStatus(false)
         } else if (result.isDenied) {
-          console.log('取消')
+          notify(false, '動作取消')
         }
       })
     }

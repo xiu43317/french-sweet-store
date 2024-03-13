@@ -101,7 +101,6 @@ export default {
           confirmButtonColor: 'green',
           cancelButtonColor: 'gray',
           confirmButtonText: '複製',
-          confirmButton: false,
           cancelButtonText: '取消'
         }).then(async (result) => {
           if (result.isConfirmed) {
@@ -110,7 +109,7 @@ export default {
                 notify(true, '複製成功')
               })
           } else if (result.isDenied) {
-            console.log('取消')
+            notify(false, '取消動作')
           }
         })
       }
