@@ -117,9 +117,9 @@ export default {
       couponModal.value.closeModal()
       delCouponModal.value.hideModal()
     }
-    const getCoupons = () => {
+    const getCoupons = (page = 1) => {
       isLoading.value = true
-      axios.get(`${url}/api/${path}/admin/coupons`)
+      axios.get(`${url}/api/${path}/admin/coupons?page=${page}`)
         .then((res) => {
           coupons.value = [...res.data.coupons]
           pages.value = { ...res.data.pagination }

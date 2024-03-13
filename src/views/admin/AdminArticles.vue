@@ -86,10 +86,10 @@ export default {
     const tempArticle = ref({})
     const articleModal = ref(null)
     const deleteModal = ref(null)
-    const getArticles = () => {
+    const getArticles = (page = 1) => {
       isLoading.value = true
       axios
-        .get(`${url}/api/${path}/admin/articles`)
+        .get(`${url}/api/${path}/admin/articles?page=${page}`)
         .then((res) => {
           articles.value = [...res.data.articles]
           pages.value = { ...res.data.pagination }

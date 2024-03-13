@@ -75,7 +75,7 @@ export default {
         } = res.data
         document.cookie = `hexToken=${token};expires=${new Date(expired)};`
         alert(res.data.message)
-        router.push('/admin/products')
+        router.push('/admin')
       }).catch((error) => {
         alert(error.message)
       })

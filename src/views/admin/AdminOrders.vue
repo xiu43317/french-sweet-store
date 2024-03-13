@@ -107,10 +107,10 @@ export default {
     const pages = ref({})
     const deleteModal = ref(null)
     const orderModal = ref(null)
-    const getOrders = () => {
+    const getOrders = (page = 1) => {
       isLoading.value = true
       axios
-        .get(`${url}/api/${path}/admin/orders`)
+        .get(`${url}/api/${path}/admin/orders?page=${page}`)
         .then((res) => {
           orders.value = [...res.data.orders]
           pages.value = { ...res.data.pagination }
