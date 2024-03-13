@@ -27,7 +27,7 @@
     <div class="mt-5 mb-4 text-center">
       <h4 class="h2">法式經典</h4>
     </div>
-    <div class="row">
+    <div class="row" style="overflow-x: hidden;">
       <ClassicDessert title="閃電泡芙"
         data-aos="fade-right" data-aos-duration="1000" data-aos-once="false"
         link="/products?category=泡芙"

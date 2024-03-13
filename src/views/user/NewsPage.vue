@@ -1,6 +1,6 @@
 <template>
   <myLoading :active="isLoading"></myLoading>
-  <div class="container mt-3">
+  <div class="container mt-3" style="overflow-x: hidden;">
     <div class="text-center">
       <h3 class="fs-2 my-3 my-lg-5"
       data-aos="fade-right">最新消息</h3>

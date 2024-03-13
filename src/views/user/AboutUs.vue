@@ -1,7 +1,7 @@
 <template>
-  <div class="container">
+  <div class="container" style="overflow-x: hidden;">
     <div class="text-center">
-      <h3 class="fs-2 my-3 my-lg-5 mx-auto">關於我們</h3>
+      <h3 class="fs-2 my-3 my-lg-5 mx-auto" >關於我們</h3>
     </div>
     <div class="row mt-3">
       <div class="col-12 col-lg-6" data-aos="fade-right" data-aos-duration="1000" data-aos-once="false">
