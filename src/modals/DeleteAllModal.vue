@@ -32,11 +32,12 @@
     </div>
   </div>
 </template>
+
 <script>
 import { Modal } from 'bootstrap'
 import { ref, onMounted } from 'vue'
 export default {
-  setup (props) {
+  setup () {
     let myModal
     const modal = ref(null)
     const openModal = () => {
@@ -54,23 +55,5 @@ export default {
       closeModal
     }
   }
-  /*
-  data () {
-    return {
-      myModal: ''
-    }
-  },
-  methods: {
-    openModal () {
-      this.myModal.show()
-    },
-    closeModal () {
-      this.myModal.hide()
-    }
-  },
-  mounted () {
-    this.myModal = new Modal(this.$refs.modal)
-  }
-  */
 }
 </script>

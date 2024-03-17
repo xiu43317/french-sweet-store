@@ -37,7 +37,7 @@
     </div>
   </div>
 </template>
-<style scoped></style>
+
 <script>
 import { ref, watch } from 'vue'
 

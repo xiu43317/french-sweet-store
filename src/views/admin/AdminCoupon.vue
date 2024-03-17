@@ -3,7 +3,7 @@
   <div class="h3 mt-4 text-center">優惠卷新增頁面</div>
   <div class="container">
     <div class="text-end mt-4">
-      <button class="btn btn-primary" @click="openModal('new')">
+      <button type="button" class="btn btn-primary" @click="openModal('new')">
         建立新的優惠卷
       </button>
       <!-- 新增優惠卷Modal -->
@@ -63,26 +63,26 @@
       ref="delCouponModal"
     />
     <!-- pagination -->
-    <AdminPagination
+    <BottomPagination
       :pages="pages"
       @emit-page="getCoupons"
       ref="pagination"
     />
   </div>
 </template>
+
 <script>
 import CouponModal from '@/modals/CouponModal.vue'
-// import CouponDelModal from '@/modals/CouponDelModal.vue'
 import DeleteModal from '@/modals/DeleteModal.vue'
-import AdminPagination from '@/components/BottomPagination.vue'
+import BottomPagination from '@/components/BottomPagination.vue'
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 
 const url = import.meta.env.VITE_APP_API_URL
 const path = import.meta.env.VITE_APP_API_NAME
 export default {
-  components: { CouponModal, AdminPagination, DeleteModal },
-  setup (props) {
+  components: { CouponModal, BottomPagination, DeleteModal },
+  setup () {
     const coupons = ref([])
     const pages = ref({})
     const tempCoupon = ref({})
@@ -130,7 +130,6 @@ export default {
           isLoading.value = false
         })
         .catch((err) => {
-          // console.dir(err)
           alert(err.message)
           isLoading.value = false
         })
@@ -157,25 +156,22 @@ export default {
       if (isNew.value) {
         axios.post(`${url}/api/${path}/admin/coupon`, { data: newCoupon })
           .then((res) => {
-            // console.log(res)
             alert(res.data.message)
             closeModal()
             getCoupons()
           })
           .catch((err) => {
             console.log(err)
-            alert(err.response.data.message)
+            alert(err.message)
           })
       } else {
         axios.put(`${url}/api/${path}/admin/coupon/${coupon.id}`, { data: newCoupon })
           .then((res) => {
-            // console.log(res)
             alert(res.data.message)
             closeModal()
             getCoupons()
           })
           .catch((err) => {
-            // console.log(err)
             alert(err.response.data.message)
           })
       }
@@ -199,116 +195,5 @@ export default {
       updateCoupon
     }
   }
-
-  /*
-  data () {
-    return {
-      coupons: [],
-      pagination: {},
-      tempCoupon: {},
-      isLoading: false,
-      isNew: false,
-      emptyCoupon: {
-        title: '',
-        is_enabled: 0,
-        code: '',
-        due_date: new Date() / 1000,
-        percent: '',
-        id: ''
-      }
-    }
-  },
-  components: { CouponModal, CouponDelModal, AdminPagination },
-  methods: {
-    openModal (status, coupon = {}) {
-      if (status === 'new') {
-        this.isNew = true
-        this.tempCoupon = { ...this.emptyCoupon }
-        this.$refs.couponModal.openModal()
-      } else if (status === 'delete') {
-        this.isNew = false
-        this.tempCoupon = coupon
-        this.$refs.delCouponModal.openModal()
-      } else if (status === 'edit') {
-        this.isNew = false
-        this.tempCoupon = { ...coupon }
-        this.$refs.couponModal.openModal()
-      }
-    },
-    closeModal () {
-      this.$refs.couponModal.closeModal()
-      this.$refs.delCouponModal.closeModal()
-    },
-    getCoupons () {
-      this.isLoading = true
-      this.$http.get(`${url}/api/${path}/admin/coupons`)
-        .then((res) => {
-          // console.log(res)
-          this.coupons = [...res.data.coupons]
-          this.pagination = { ...res.data.pagination }
-          this.coupons.forEach((item) => {
-            const date = new Date(item.due_date * 1000).toISOString().split('T')[0]
-            item.formatDate = date
-          })
-          // console.log(this.coupons)
-          this.isLoading = false
-        })
-        .catch((err) => {
-          // console.dir(err)
-          alert(err.message)
-          this.isLoading = false
-        })
-    },
-    deleteCoupon (id) {
-      this.$http.delete(`${url}/api/${path}/admin/coupon/${id}`)
-        .then((res) => {
-          // console.log(res)
-          alert(res.data.message)
-          this.$refs.delCouponModal.closeModal()
-          this.getCoupons()
-        }).catch((err) => {
-          alert(err.response.data.message)
-          this.$refs.delCouponModal.closeModal()
-        })
-    },
-    updateCoupon (coupon) {
-      // console.log(coupon)
-      const newCoupon = {
-        title: coupon.title,
-        is_enabled: coupon.is_enabled,
-        percent: coupon.percent,
-        due_date: coupon.due_date / 1000,
-        code: coupon.code
-      }
-      if (this.isNew) {
-        this.$http.post(`${url}/api/${path}/admin/coupon`, { data: newCoupon })
-          .then((res) => {
-            // console.log(res)
-            alert(res.data.message)
-            this.closeModal()
-            this.getCoupons()
-          })
-          .catch((err) => {
-            console.log(err)
-            alert(err.response.data.message)
-          })
-      } else {
-        this.$http.put(`${url}/api/${path}/admin/coupon/${coupon.id}`, { data: newCoupon })
-          .then((res) => {
-            // console.log(res)
-            alert(res.data.message)
-            this.closeModal()
-            this.getCoupons()
-          })
-          .catch((err) => {
-            // console.log(err)
-            alert(err.response.data.message)
-          })
-      }
-    }
-  },
-  mounted () {
-    this.getCoupons()
-  } */
 }
 </script>

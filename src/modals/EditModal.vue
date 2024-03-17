@@ -240,6 +240,7 @@
     </div>
   </div>
 </template>
+
 <script>
 import { Modal } from 'bootstrap'
 import { ref, onMounted, watch } from 'vue'
@@ -268,7 +269,6 @@ export default {
           })
           .catch((error) => {
             alert(error.response.data.message)
-            // this.hideModal()
           })
       } else {
         axios
@@ -282,7 +282,6 @@ export default {
           })
           .catch((error) => {
             alert(error.response.data.message)
-            // this.hideModal();
           })
       }
     }
@@ -304,7 +303,7 @@ export default {
       const file = fileInput.value.files[0]
       const formData = new FormData()
       formData.append('file-to-upload', file)
-      this.$http
+      axios
         .post(`${url}/api/${path}/admin/upload`, formData)
         .then((res) => {
           product.value.imageUrl = res.data.imageUrl
@@ -351,107 +350,5 @@ export default {
       fileInput
     }
   }
-  /*
-  data () {
-    return {
-      product: {},
-      new: false
-    }
-  },
-  props: ['isNew', 'tempProduct', 'currentPage'],
-  methods: {
-    updateProduct () {
-      if (this.isNew) {
-        this.$http
-          .post(`${url}/api/${path}/admin/product`, { data: this.tempProduct })
-          .then((res) => {
-            alert(res.data.message)
-            this.getProducts()
-            this.hideModal()
-          })
-          .catch((error) => {
-            alert(error.response.data.message)
-            // this.hideModal()
-          })
-      } else {
-        this.$http
-          .put(`${url}/api/${path}/admin/product/${this.tempProduct.id}`, {
-            data: this.tempProduct
-          })
-          .then((res) => {
-            alert(res.data.message)
-            this.getProducts()
-            this.hideModal()
-          })
-          .catch((error) => {
-            alert(error.response.data.message)
-            // this.hideModal();
-          })
-      }
-    },
-    createImages () {
-      this.Product.imagesUrl = []
-      this.Product.imagesUrl.push('')
-    },
-    getProducts () {
-      this.$emit('getProducts', this.currentPage)
-    },
-    openModal () {
-      this.product = this.tempProduct
-      this.myModal.show()
-    },
-    hideModal () {
-      this.myModal.hide()
-    },
-    uploadFile () {
-      // console.dir(fileInput)
-      const file = this.fileInput.files[0]
-      // console.log(file)
-      const formData = new FormData()
-      formData.append('file-to-upload', file)
-      this.$http
-        .post(`${url}/api/${path}/admin/upload`, formData)
-        .then((res) => {
-          // console.log(res.data.imageUrl)
-          this.Product.imageUrl = res.data.imageUrl
-        })
-        .catch((err) => {
-          // console.dir(err)
-          alert(err.response.data.message)
-        })
-    },
-    uploadFiles (key) {
-      const multiImgs = document.querySelectorAll('.uploadImages')
-      // console.log(multiImgs[key].files)
-      const file = multiImgs[key].files[0]
-      const formData = new FormData()
-      formData.append('file-to-upload', file)
-      this.$http
-        .post(`${url}/api/${path}/admin/upload`, formData)
-        .then((res) => {
-          this.Product.imagesUrl[key] = res.data.imageUrl
-        })
-        .catch((err) => {
-          // console.dir(err)
-          alert(err.response.data.message)
-        })
-    }
-  },
-  watch: {
-    isNew () {
-      // console.log('1')
-      this.new = this.isNew
-    }
-  },
-  mounted () {
-    // this.product = { ...this.tempProduct }
-    // this.new = this.isNew
-    this.myModal = new Modal(this.$refs.Modal, {
-      keyboard: false
-    })
-    this.fileInput = this.$refs.formFile
-    this.fileInput.addEventListener('change', this.uploadFile)
-  }
-  */
 }
 </script>

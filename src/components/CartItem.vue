@@ -5,7 +5,7 @@
         :src="props.cart.product.imageUrl"
         class="img-fluid object-fit-cover col-4"
         style="height: 100px"
-        alt=""
+        :alt="props.cart.product.title"
       />
       <div class="col-8 d-flex justify-content-between">
         <div class="d-flex flex-column justify-content-evenly">
@@ -37,6 +37,7 @@
     <hr />
   </div>
 </template>
+
 <script setup>
 import { ref, watch } from 'vue'
 import { delFloat } from '@/api/math.js'

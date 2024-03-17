@@ -3,7 +3,7 @@
   <div class="h3 text-center mt-4">後台產品列表</div>
   <div class="container">
     <div class="text-end mt-4">
-      <button class="btn btn-primary" @click="openModal('new')">
+      <button type="button" class="btn btn-primary" @click="openModal('new')">
         建立新的產品
       </button>
     </div>
@@ -61,40 +61,38 @@
       </tbody>
     </table>
     <!-- openModal -->
-    <edit-product
+    <EditProduct
       :is-new="isNew"
       :temp-product="tempProduct"
       :current-page="currentPage"
       @get-products="getProducts"
       ref="productModal"
-    ></edit-product>
+    />
     <!-- deleteModal -->
-    <delete-product
+    <DeleteProduct
       :product="tempProduct"
       @delete-item="deleteProduct"
       ref="delProductModal"
-    ></delete-product>
+    />
     <!-- pagination -->
-    <admin-pagination
+    <BottomPagination
       :pages="pages"
       @emit-page="getProducts"
       ref="pagination"
-    >
-    </admin-pagination>
+    />
   </div>
 </template>
 <script>
-import editProduct from '@/modals/Editmodal.vue'
-import deleteProduct from '@/modals/DeleteModal.vue'
-import AdminPagination from '@/components/BottomPagination.vue'
+import EditProduct from '@/modals/Editmodal.vue'
+import DeleteProduct from '@/modals/DeleteModal.vue'
+import BottomPagination from '@/components/BottomPagination.vue'
 import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
 import axios from 'axios'
 
 const url = import.meta.env.VITE_APP_API_URL
 const path = import.meta.env.VITE_APP_API_NAME
 export default {
-  components: { editProduct, deleteProduct, AdminPagination },
+  components: { EditProduct, DeleteProduct, BottomPagination },
   setup (props) {
     const tempProduct = ref({
       imagesUrl: []
@@ -106,17 +104,6 @@ export default {
     const delProductModal = ref(null)
     const isLoading = ref(false)
     const currentPage = ref(1)
-    const router = useRouter()
-    const checkLogin = () => {
-      axios
-        .post(`${url}/api/user/check`)
-        .then((_res) => {
-          getProducts()
-        })
-        .catch((_error) => {
-          router.push('/login')
-        })
-    }
     const getProducts = (page = 1) => {
       isLoading.value = true
       axios
@@ -125,8 +112,8 @@ export default {
           // console.log(res.data.products);
           products.value = res.data.products
           pages.value = res.data.pagination
-          isLoading.value = false
           currentPage.value = page
+          isLoading.value = false
         })
         .catch((error) => {
           console.dir(error)
@@ -183,99 +170,10 @@ export default {
       delProductModal,
       isLoading,
       currentPage,
-      checkLogin,
       getProducts,
       openModal,
       deleteProduct
     }
   }
-  /*
-  data () {
-    return {
-      products: [],
-      isNew: true,
-      pagination: {},
-      tempProduct: {
-        imagesUrl: []
-      },
-      editModal: '',
-      delModel: '',
-      isLoading: false,
-      currentPage: 1
-    }
-  },
-  methods: {
-    checkLogin () {
-      this.$http
-        .post(`${url}/api/user/check`)
-        .then((_res) => {
-          this.getProducts()
-        })
-        .catch((_error) => {
-          this.$router.push('/login')
-        })
-    },
-    getProducts (page = 1) {
-      this.isLoading = true
-      this.$http
-        .get(`${url}/api/${path}/admin/products?page=${page}`)
-        .then((res) => {
-          // console.log(res.data.products);
-          this.products = res.data.products
-          this.pagination = res.data.pagination
-          this.isLoading = false
-          this.currentPage = page
-        })
-        .catch((error) => {
-          console.dir(error)
-          this.isLoading = false
-        })
-    },
-    openModal (status, item = {}) {
-      if (status === 'new') {
-        this.tempProduct = {
-          imagesUrl: []
-        }
-        this.isNew = true
-        setTimeout(() => {
-          this.$refs.productModal.openModal()
-        }, 500)
-      } else if (status === 'edit') {
-        this.tempProduct = { ...item }
-        if (!this.tempProduct.imagesUrl) {
-          this.tempProduct.imagesUrl = []
-        }
-        this.isNew = false
-        setTimeout(() => {
-          this.$refs.productModal.openModal()
-        }, 500)
-      } else if (status === 'delete') {
-        this.tempProduct = item
-        setTimeout(() => {
-          this.$refs.delProductModal.openModal()
-        }, 500)
-      }
-    },
-    deleteProduct (id) {
-      this.$http
-        .delete(`${url}/api/${path}/admin/product/${id}`)
-        .then((res) => {
-          alert(res.data.message)
-          this.$refs.delProductModal.hideModal()
-          this.getProducts(this.currentPage)
-        })
-        .catch((error) => {
-          alert(error.response.data.message)
-          this.$refs.delProductModal.hideModal()
-        })
-    }
-  },
-  mounted () {
-    this.getProducts()
-    this.editModal = this.$refs.productModal
-    this.delModel = this.$refs.delProductModal
-  },
-  components: { editProduct, deleteProduct, AdminPagination }
-  */
 }
 </script>

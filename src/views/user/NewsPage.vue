@@ -15,6 +15,7 @@
     </div>
   </div>
 </template>
+
 <script>
 import { ref, onMounted } from 'vue'
 import BottomPagination from '@/components/BottomPagination.vue'
@@ -23,7 +24,7 @@ import api from '@/api/axios'
 import { notify } from '@/api/toast.js'
 export default {
   components: { NewsBigCard, BottomPagination },
-  setup (props) {
+  setup () {
     const articles = ref(null)
     const pages = ref({})
     const isLoading = ref(false)
@@ -33,11 +34,9 @@ export default {
         .then((res) => {
           articles.value = [...res.data.articles]
           pages.value = { ...res.data.pagination }
-          // console.log(articles.value)
           isLoading.value = false
         })
         .catch((err) => {
-          // console.log(err.response.data.message)
           notify(false, err.response.data.message)
           isLoading.value = false
         })

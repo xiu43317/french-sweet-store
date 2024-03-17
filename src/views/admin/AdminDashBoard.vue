@@ -29,6 +29,7 @@
   </nav>
   <router-view v-if="checkSuccess"></router-view>
 </template>
+
 <script>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
@@ -36,7 +37,7 @@ import axios from 'axios'
 const url = import.meta.env.VITE_APP_API_URL
 
 export default {
-  setup (props) {
+  setup () {
     const checkSuccess = ref(false)
     const router = useRouter()
     const checkLogin = () => {
@@ -54,9 +55,15 @@ export default {
         })
     }
     const signOut = () => {
-      document.cookie = 'hexToken=;expires=;'
-      alert('已登出')
-      router.push('/login')
+      axios.post(`${url}/logout`)
+        .then((res) => {
+          alert(res.data.message)
+          document.cookie = 'hexToken=;expires=;'
+          router.push('/login')
+        })
+        .catch((err) => {
+          console.log(err)
+        })
     }
     onMounted(() => {
       checkLogin()
@@ -68,36 +75,5 @@ export default {
       router
     }
   }
-  /*
-  data () {
-    return {
-      checkSuccess: false
-    }
-  },
-  methods: {
-    checkLogin () {
-      const token = document.cookie.replace(/(?:(?:^|.*;\s*)hexToken\s*=\s*([^;]*).*$)|^.*$/, '$1')
-      this.$http.defaults.headers.common.Authorization = token
-      this.$http
-        .post(`${url}/api/user/check`)
-        .then((res) => {
-          this.checkSuccess = true
-        })
-        .catch((error) => {
-          console.dir(error)
-          alert(error.response.data.message)
-          this.$router.push('/login')
-        })
-    },
-    signOut () {
-      document.cookie = 'hexToken=;expires=;'
-      alert('已登出')
-      this.$router.push('/login')
-    }
-  },
-  mounted () {
-    this.checkLogin()
-  }
-  */
 }
 </script>

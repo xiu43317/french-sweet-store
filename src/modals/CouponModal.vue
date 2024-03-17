@@ -28,11 +28,11 @@
         </div>
         <div class="mb-3">
             <label for="due_date">到期日</label>
-            <input type="date" class="form-control" id="due_date" v-model="due_date">
+            <input type="date" class="form-control" id="due_date" v-model="dueDate">
         </div>
         <div class="mb-3">
             <label for="price">折扣百分比</label>
-            <input type="number" class="form-control" id="price" placeholder="請輸入折扣百分比" v-model.number="tempCoupon.percent">
+            <input type="number" class="form-control" id="price" placeholder="請輸入折扣百分比" v-model.number="tempCoupon.percent" min="1">
         </div>
         <div class="mb-3">
           <div class="form-check">
@@ -54,9 +54,57 @@
   </div>
 </div>
 </template>
+
 <script>
 import { Modal } from 'bootstrap'
+import { ref, onMounted, watch } from 'vue'
+
 export default {
+  props: ['coupon', 'isNew'],
+  emits: ['update'],
+  setup (props, ctx) {
+    const couponModal = ref(null)
+    const tempCoupon = ref({})
+    const dueDate = ref(null)
+    const isNewCoupon = ref(false)
+    const modal = ref(null)
+    const openModal = () => {
+      couponModal.value.show()
+    }
+    const closeModal = () => {
+      couponModal.value.hide()
+    }
+    const updateCoupon = () => {
+      if (tempCoupon.value.percent < 1) alert('折扣百分比不得小於1')
+      else ctx.emit('update', tempCoupon.value)
+    }
+    onMounted(() => {
+      couponModal.value = new Modal(modal.value)
+    })
+    watch(() => props.coupon, () => {
+      tempCoupon.value = { ...props.coupon }
+      tempCoupon.value.due_date = tempCoupon.value.due_date * 1000
+      const dateAndTime = new Date(tempCoupon.value.due_date).toISOString().split('T')
+      dueDate.value = dateAndTime[0]
+    })
+    watch(dueDate, () => {
+      tempCoupon.value.due_date = Math.floor(new Date(dueDate.value))
+    })
+    watch(() => props.isNew, () => {
+      isNewCoupon.value = props.isNew
+    })
+    return {
+      modal,
+      couponModal,
+      tempCoupon,
+      dueDate,
+      isNewCoupon,
+      openModal,
+      closeModal,
+      updateCoupon
+    }
+  }
+  /*
   data () {
     return {
       couponModal: '',
@@ -84,13 +132,10 @@ export default {
   },
   watch: {
     coupon () {
-      // console.log('click')
       this.tempCoupon = { ...this.coupon }
-      // console.log(this.tempCoupon.due_date)
       this.tempCoupon.due_date = this.tempCoupon.due_date * 1000
       const dateAndTime = new Date(this.tempCoupon.due_date).toISOString().split('T')
       this.due_date = dateAndTime[0]
-      // console.log(this.tempCoupon)
     },
     due_date () {
       this.tempCoupon.due_date = Math.floor(new Date(this.due_date))
@@ -99,5 +144,6 @@ export default {
       this.is_newCoupon = this.isNew
     }
   }
+  */
 }
 </script>

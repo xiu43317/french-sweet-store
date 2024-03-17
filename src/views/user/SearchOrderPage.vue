@@ -22,24 +22,7 @@
     <button @click="redoSearch()" class="btn btn-lg btn-outline-success" v-if="hideSearchBar">重新查詢</button>
   </div>
 </template>
-<style scoped>
-.mh-370{
-    min-height: 370px;
-}
-.mw-500{
-    max-width: 500px;
-}
-.input-group-text{
-    border-color: black;
-}
-.form-control{
-    border-color: black;
-}
-.form-control:focus{
-  border-color: white;
-  box-shadow: 0 0 0 0.15rem rgba(0, 0, 0, 0.25);
-}
-</style>
+
 <script>
 import OrderDetail from '@/components/OrderDetail.vue'
 import { useRouter } from 'vue-router'
@@ -49,7 +32,7 @@ import { notify } from '@/api/toast.js'
 
 export default {
   components: { OrderDetail },
-  setup (props) {
+  setup () {
     const hideSearchBar = ref(false)
     const order = ref(null)
     const orderId = ref(null)
@@ -59,19 +42,16 @@ export default {
       isLoading.value = true
       api.getOrder(orderId.value)
         .then((res) => {
-          isLoading.value = false
-          // console.log(res.data)
-          if (res.data.order === null) notify(false, '沒有此訂單喔')// console.log('輸入錯誤')
+          if (res.data.order === null) notify(false, '沒有此訂單喔')
           else {
             if (res.data.order.is_paid) {
-              // console.log('已付款')
               order.value = res.data.order
               hideSearchBar.value = true
             } else router.push(`/payment?id=${orderId.value}`)
           }
+          isLoading.value = false
         })
         .catch((err) => {
-          // console.log(err)
           notify(false, err.response.data.message)
           isLoading.value = false
         })
@@ -93,3 +73,22 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.mh-370{
+    min-height: 370px;
+}
+.mw-500{
+    max-width: 500px;
+}
+.input-group-text{
+    border-color: black;
+}
+.form-control{
+    border-color: black;
+}
+.form-control:focus{
+  border-color: white;
+  box-shadow: 0 0 0 0.15rem rgba(0, 0, 0, 0.25);
+}
+</style>

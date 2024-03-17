@@ -41,22 +41,15 @@
         </div>
       </div>
     </div>
-    </template>
-    <style scoped>
-    .form-signin {
-      width: 100%;
-      max-width: 330px;
-      padding: 15px;
-      margin: auto;
-    }
-    </style>
+</template>
+
 <script>
 import axios from 'axios'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 export default {
-  setup (props) {
+  setup () {
     const url = import.meta.env.VITE_APP_API_URL
     const emailInput = ref('')
     const pwInput = ref('')
@@ -77,7 +70,7 @@ export default {
         alert(res.data.message)
         router.push('/admin')
       }).catch((error) => {
-        alert(error.message)
+        alert(error.response.data.message)
       })
     }
     return {
@@ -119,3 +112,12 @@ export default {
 */
 }
 </script>
+
+<style scoped>
+.form-signin {
+  width: 100%;
+  max-width: 330px;
+  padding: 15px;
+  margin: auto;
+}
+</style>

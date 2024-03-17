@@ -58,12 +58,7 @@
   </div>
   <ProductDetailModal ref="modal" :product="tempProduct"/>
 </template>
-<style>
-.side-menu {
-  position: sticky;
-  top: 110px;
-}
-</style>
+
 <script>
 import { useRoute, useRouter } from 'vue-router'
 import { ref, onMounted } from 'vue'
@@ -97,7 +92,6 @@ export default {
           products.value = [...res.data.products]
           pages.value = { ...res.data.pagination }
           window.scroll(0, 0)
-          // console.log(products.value)
           isLoading.value = false
         })
         .catch((err) => {
@@ -130,3 +124,10 @@ export default {
   }
 }
 </script>
+
+<style>
+.side-menu {
+  position: sticky;
+  top: 110px;
+}
+</style>

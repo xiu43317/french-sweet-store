@@ -4,15 +4,10 @@ import { notify } from '@/api/toast.js'
 import api from '@/api/axios'
 
 export const useCartStore = defineStore('cart', () => {
-  // 等於option API的 state: () => { return {count:0}}
   const cart = ref({ carts: [] })
-  // 購物車內加到購物車按鈕狀態
   const addBtnState = ref(false)
-  // 購物車讀取狀態
   const isCartLoading = ref(false)
-  // 等於option API的getters: {doubleCount: (state) => state.counter * 2}
   const cartChanged = computed(() => cart.value)
-  // 等於option API的actions: { increment(){this.count ++}}
   const getCart = async () => {
     isCartLoading.value = true
     return await api.getCart()

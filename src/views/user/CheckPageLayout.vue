@@ -6,7 +6,10 @@
       <div class="col-lg-6">
         <h4 class="text-center">購物車資訊</h4>
         <div class="mt-3 text-end">
-          <button type="button" class="btn btn-outline-success" @click="clearCart()" :disabled="addBtnState || !cart.total">清空購物車</button>
+          <button type="button" class="btn btn-outline-success" @click="clearCart()" :disabled="addBtnState || !cart.total">
+            <font-awesome-icon icon="spinner" class="fa-spin" v-show="cartLoading"/>
+            清空購物車
+          </button>
         </div>
         <hr />
         <div class="text-center my-5" v-if="!cart.total">
@@ -130,6 +133,7 @@
     </div>
   </div>
 </template>
+
 <script>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
@@ -144,8 +148,9 @@ import Swal from 'sweetalert2'
 
 export default {
   components: { FlowChart, ProductOrderCard },
-  setup (props) {
+  setup () {
     const cartStore = useCartStore()
+    const cartLoading = ref(false)
     const { cart, addBtnState, isCartLoading } = storeToRefs(cartStore)
     const { getCart, deleteAllCart, useCoupon, changeAddStatus } = cartStore
     const useMyCoupon = async () => {
@@ -178,16 +183,27 @@ export default {
       }).then(async (result) => {
         if (result.isConfirmed) {
           changeAddStatus(true)
-          // console.log('確認')
+          cartLoading.value = true
           await deleteAllCart()
             .then((res) => {
-              notify(true, `全部${res.data.message}`)
+              cartLoading.value = false
+              Swal.fire({
+                title: '刪除成功',
+                text: `全部${res.data.message}`,
+                icon: 'success'
+              })
+                .then((res) => {
+                  if (res.isConfirmed) getCart()
+                })
             })
             .catch((err) => {
-              console.log(err.response.data.message)
-              notify(false, `${err.response.data.message}`)
+              cartLoading.value = false
+              Swal.fire({
+                title: '刪除失敗',
+                text: `${err.response.data.message}`,
+                icon: 'error'
+              })
             })
-          await getCart()
           changeAddStatus(false)
         } else if (result.isDenied) {
           notify(false, '動作取消')
@@ -210,7 +226,7 @@ export default {
           router.push(`/payment?id=${res.data.orderId}`)
         })
         .catch((err) => {
-          console.log(err)
+          notify(false, err.message)
         })
     }
     const user = ref({
@@ -228,6 +244,7 @@ export default {
     })
     return {
       cart,
+      cartLoading,
       isCartLoading,
       addBtnState,
       changeAddStatus,

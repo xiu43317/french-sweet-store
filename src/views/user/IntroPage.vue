@@ -114,6 +114,91 @@
 </div>
 <ProductDetailModal ref="modal" :product="tempProduct"/>
 </template>
+
+<script>
+import { Swiper, SwiperSlide } from 'swiper/vue'
+import 'swiper/css'
+import 'swiper/css/navigation'
+import 'swiper/css/pagination'
+import { Autoplay, Navigation, Pagination } from 'swiper/modules'
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import NewsCard from '@/components/NewsCard.vue'
+import ClassicDessert from '@/components/ClassicDessert.vue'
+import ProductCard from '@/components/ProductCard.vue'
+import api from '@/api/axios'
+import ProductDetailModal from '@/modals/ProductDetailModal.vue'
+import { notify } from '@/api/toast'
+
+export default {
+  components: {
+    Swiper,
+    SwiperSlide,
+    NewsCard,
+    ClassicDessert,
+    ProductCard,
+    ProductDetailModal
+  },
+  setup () {
+    const isLoading = ref(false)
+    const dataReady = ref(false)
+    const slider = ref(null)
+    const router = useRouter()
+    const onSwiper = (swiper) => {
+      slider.value = swiper
+    }
+    const articles = ref(null)
+    const products = ref(null)
+    const tempProduct = ref({})
+    const hotProducts = ref(null)
+    const modal = ref(null)
+    const getArticles = (page) => {
+      api.getArticles(page)
+        .then((res) => {
+          articles.value = [...res.data.articles]
+        })
+        .catch((err) => {
+          notify(false, err.response.message)
+        })
+    }
+    const getProducts = (page) => {
+      isLoading.value = true
+      api.getProducts(page)
+        .then((res) => {
+          products.value = [...res.data.products]
+          hotProducts.value = [...products.value.filter((item) => item.stars > 4)]
+          dataReady.value = true
+          isLoading.value = false
+        })
+        .catch((err) => {
+          notify(false, err.response.data.message)
+          isLoading.value = false
+        })
+    }
+    const goToDetail = (product) => {
+      router.push(`/product/${product.id}`)
+    }
+    onMounted(() => {
+      getArticles(1)
+      getProducts()
+    })
+    return {
+      isLoading,
+      modal,
+      tempProduct,
+      dataReady,
+      hotProducts,
+      products,
+      articles,
+      onSwiper,
+      slider,
+      goToDetail,
+      modules: [Autoplay, Navigation, Pagination]
+    }
+  }
+}
+</script>
+
 <style scoped>
 .hero-image {
   background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
@@ -148,98 +233,3 @@
   background-color: rgba(2555, 255, 255, 0.5);
 }
 </style>
-<script>
-// Import Swiper Vue.js components
-import { Swiper, SwiperSlide } from 'swiper/vue'
-
-// Import Swiper styles
-import 'swiper/css'
-import 'swiper/css/navigation'
-import 'swiper/css/pagination'
-// Import custom Styles
-// import './style.css'
-
-// import required modules
-import { Autoplay, Navigation, Pagination } from 'swiper/modules'
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import NewsCard from '@/components/NewsCard.vue'
-import ClassicDessert from '@/components/ClassicDessert.vue'
-import ProductCard from '@/components/ProductCard.vue'
-import api from '../../api/axios'
-import ProductDetailModal from '@/modals/ProductDetailModal.vue'
-
-export default {
-  components: {
-    Swiper,
-    SwiperSlide,
-    NewsCard,
-    ClassicDessert,
-    ProductCard,
-    ProductDetailModal
-  },
-  setup () {
-    const isLoading = ref(false)
-    const dataReady = ref(false)
-    const slider = ref(null)
-    const router = useRouter()
-    const onSwiper = (swiper) => {
-      slider.value = swiper
-    }
-    const articles = ref(null)
-    const products = ref(null)
-    const tempProduct = ref({})
-    const hotProducts = ref(null)
-    const modal = ref(null)
-    const getArticles = (page) => {
-      api.getArticles(page)
-        .then((res) => {
-          articles.value = [...res.data.articles]
-          // console.log(articles.value)
-        })
-        .catch((err) => {
-          console.log(err.response.message)
-        })
-    }
-    const getProducts = (page) => {
-      isLoading.value = true
-      api.getProducts(page)
-        .then((res) => {
-          // console.log(res.data.products)
-          products.value = [...res.data.products]
-          // console.log(products.value)
-          hotProducts.value = [...products.value.filter((item) => item.stars > 4)]
-          dataReady.value = true
-          isLoading.value = false
-        })
-        .catch((err) => {
-          console.log(err.response.data.message)
-          isLoading.value = false
-        })
-    }
-    const goToDetail = (product) => {
-      router.push(`/product/${product.id}`)
-      // setTimeout(() => {
-      //   modal.value.openModal()
-      // }, 500)
-    }
-    onMounted(() => {
-      getArticles(1)
-      getProducts()
-    })
-    return {
-      isLoading,
-      modal,
-      tempProduct,
-      dataReady,
-      hotProducts,
-      products,
-      articles,
-      onSwiper,
-      slider,
-      goToDetail,
-      modules: [Autoplay, Navigation, Pagination]
-    }
-  }
-}
-</script>

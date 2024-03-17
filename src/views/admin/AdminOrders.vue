@@ -33,6 +33,7 @@
             <td>
               <div class="form-check form-switch">
                 <input
+                  :disabled="isToggling"
                   class="form-check-input"
                   type="checkbox"
                   :id="`paidSwitch${item.id}`"
@@ -67,7 +68,7 @@
         </template>
       </tbody>
     </table>
-    <AdminPagination
+    <BottomPagination
       :pages="pages"
       @emit-page="getOrders"
       ref="pagination"
@@ -87,19 +88,21 @@
   ref="deleteAllModal"
   @clear-all="deleteAllOrders"/>
 </template>
+
 <script>
 import OrderModal from '@/modals/OrderModal.vue'
 import DeleteModal from '@/modals/DeleteModal.vue'
 import DeleteAllModal from '@/modals/DeleteAllModal.vue'
-import AdminPagination from '@/components/BottomPagination.vue'
+import BottomPagination from '@/components/BottomPagination.vue'
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 
 const url = import.meta.env.VITE_APP_API_URL
 const path = import.meta.env.VITE_APP_API_NAME
 export default {
-  components: { DeleteModal, OrderModal, DeleteAllModal, AdminPagination },
-  setup (props) {
+  components: { DeleteModal, OrderModal, DeleteAllModal, BottomPagination },
+  setup () {
+    const isToggling = ref(false)
     const orders = ref([])
     const isLoading = ref(false)
     const tempOrder = ref({})
@@ -134,15 +137,18 @@ export default {
       deleteModal.value.openModal()
     }
     const updatePaid = (item) => {
+      isToggling.value = true
       axios.put(`${url}/api/${path}/admin/order/${item.id}`, { data: item })
         .then((res) => {
           alert(res.data.message)
           orderModal.value.closeModal()
+          isToggling.value = false
           getOrders()
         })
         .catch((err) => {
           console.log(err)
           alert(err.response.data.message)
+          isToggling.value = false
           orderModal.value.closeModal()
         })
     }
@@ -150,15 +156,15 @@ export default {
       isLoading.value = true
       axios.delete(`${url}/api/${path}/admin/order/${id}`)
         .then((res) => {
-          isLoading.value = false
           alert(res.data.message + '該訂單')
           deleteModal.value.hideModal()
+          isLoading.value = false
           getOrders()
         })
         .catch((err) => {
-          isLoading.value = false
           alert(err.response.data.message)
           deleteModal.value.hideModal()
+          isLoading.value = false
         })
     }
     const openModal = (item) => {
@@ -170,14 +176,14 @@ export default {
       axios.delete(`${url}/api/${path}/admin/orders/all`)
         .then((res) => {
           alert(res.data.message)
-          isLoading.value = false
           deleteAllModal.value.closeModal()
+          isLoading.value = false
           getOrders()
         })
         .catch((err) => {
           alert(err.response.data.message)
-          isLoading.value = false
           deleteAllModal.value.closeModal()
+          isLoading.value = false
         })
     }
     const openDelAllModal = () => {
@@ -187,6 +193,7 @@ export default {
       getOrders()
     })
     return {
+      isToggling,
       orders,
       isLoading,
       tempOrder,
@@ -205,93 +212,5 @@ export default {
       openDelAllModal
     }
   }
-
-  /*
-  data () {
-    return {
-      orders: [],
-      isLoading: false,
-      tempOrder: {},
-      pagination: {}
-    }
-  },
-  methods: {
-    getOrders () {
-      this.isLoading = true
-      this.$http
-        .get(`${url}/api/${path}/admin/orders`)
-        .then((res) => {
-          this.orders = [...res.data.orders]
-          this.pagination = { ...res.data.pagination }
-          this.isLoading = false
-        })
-        .catch((err) => {
-          console.log(err.response.data.message)
-          this.isLoading = false
-        })
-    },
-    date (time) {
-      const localDate = new Date(time * 1000)
-      return localDate.toLocaleDateString()
-    },
-    currency (num) {
-      const n = parseInt(num, 10)
-      return `${n.toFixed(0).replace(/./g, (c, i, a) => (i && c !== '.' && ((a.length - i) % 3 === 0) ? `, ${c}`.replace(/\s/g, '') : c))}`
-    },
-    openDelOrderModal (item) {
-      this.tempOrder = item
-      this.$refs.deleteModal.openModal()
-    },
-    updatePaid (item) {
-      this.$http.put(`${url}/api/${path}/admin/order/${item.id}`, { data: item })
-        .then((res) => {
-          alert(res.data.message)
-          this.$refs.orderModal.closeModal()
-          this.getOrders()
-        })
-        .catch((err) => {
-          console.log(err)
-          alert(err.response.data.message)
-          this.$refs.orderModal.closeModal()
-        })
-    },
-    deleteOrder (id) {
-      this.isLoading = true
-      this.$http.delete(`${url}/api/${path}/admin/order/${id}`)
-        .then((res) => {
-          this.isLoading = false
-          alert(res.data.message + '該訂單')
-          this.$refs.deleteModal.hideModal()
-          this.getOrders()
-        })
-        .catch((err) => {
-          this.isLoading = false
-          alert(err.response.data.message)
-          this.$refs.deleteModal.hideModal()
-        })
-    },
-    openModal (item) {
-      this.tempOrder = item
-      this.$refs.orderModal.openModal()
-    },
-    deleteAllOrders () {
-      this.isLoading = true
-      this.$http.delete(`${url}/api/${path}/admin/orders/all`)
-        .then((res) => {
-          alert(res.data.message)
-          this.isLoading = false
-          this.getOrders()
-        })
-        .catch((err) => {
-          alert(err.response.data.message)
-          this.isLoading = false
-        })
-    }
-  },
-  mounted () {
-    this.getOrders()
-  },
-  components: { DeleteModal, OrderModal, DeleteAllModal, AdminPagination }
-  */
 }
 </script>

@@ -167,6 +167,11 @@
     </div>
   </div>
 </template>
+
+<script>
+export default {}
+</script>
+
 <style scoped>
 .mh-380{
     min-height: 380px;
@@ -178,6 +183,3 @@ button {
   font-size: 24px;
 }
 </style>
-<script>
-export default {}
-</script>

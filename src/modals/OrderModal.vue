@@ -116,6 +116,7 @@
     </div>
   </div>
 </template>
+
 <script>
 import { Modal } from 'bootstrap'
 import { ref, watch, onMounted } from 'vue'
@@ -158,42 +159,5 @@ export default {
       modal
     }
   }
-
-  /*
-  data () {
-    return {
-      tempOrder: {
-        user: {}
-      },
-      orderModal: ''
-    }
-  },
-  props: ['selectedOrder'],
-  methods: {
-    date (time) {
-      const localDate = new Date(time * 1000)
-      return localDate.toLocaleDateString()
-    },
-    currency (num) {
-      const n = parseInt(num, 10)
-      return `${n.toFixed(0).replace(/./g, (c, i, a) => (i && c !== '.' && ((a.length - i) % 3 === 0) ? `, ${c}`.replace(/\s/g, '') : c))}`
-    },
-    openModal () {
-      this.tempOrder = { ...this.selectedOrder }
-      this.orderModal.show()
-    },
-    closeModal () {
-      this.orderModal.hide()
-    }
-  },
-  watch: {
-    selectedOrder () {
-      this.tempOrder = { ...this.selectedOrder }
-    }
-  },
-  mounted () {
-    this.orderModal = new Modal(this.$refs.modal)
-  }
-  */
 }
 </script>

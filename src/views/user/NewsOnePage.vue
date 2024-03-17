@@ -35,6 +35,7 @@
   </div>
   <ArticlePages :currentNum="num"/>
 </template>
+
 <script setup>
 import { useRoute } from 'vue-router'
 import { onMounted, ref, watch } from 'vue'
@@ -49,7 +50,6 @@ const getArticle = (id) => {
   isLoading.value = true
   api.getArticle(id)
     .then((res) => {
-      // console.log(res)
       article.value = { ...res.data.article }
       article.value.create_at =
       new Date(article.value.create_at * 1000).toLocaleDateString()
@@ -57,12 +57,10 @@ const getArticle = (id) => {
       isLoading.value = false
     })
     .catch((err) => {
-      // console.log(err)
       notify(err.response.data.message)
       isLoading.value = false
     })
 }
-// console.log(route.params.id, route.params.num)
 const num = ref(route.params.num)
 onMounted(() => {
   getArticle(route.params.id)

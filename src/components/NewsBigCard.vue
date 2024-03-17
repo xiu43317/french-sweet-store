@@ -5,7 +5,7 @@
         <img
           class="img-fluid object-fit-cover rounded"
           :src="tempArticle.imageUrl"
-          alt=""
+          :alt="tempArticle.title"
         />
       </div>
     </div>
@@ -26,19 +26,9 @@
   </div>
   <hr />
 </template>
-<style scoped>
-.zoom-in:hover img{
-  transform: scale(1.1);
-}
-.zoom-in img{
-  transition: 0.5s;
-}
-.zoom-in .frame{
-  overflow: hidden;
-}
-</style>
+
 <script>
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 export default {
   props: ['article'],
   setup (props) {
@@ -52,12 +42,21 @@ export default {
     tempArticle.value = { ...props.article }
     tempArticle.value.create_at =
     new Date(tempArticle.value.create_at * 1000).toLocaleDateString('zh-TW')
-    watch(() => props.article, () => {
-      console.log('trigger')
-    })
     return {
       tempArticle
     }
   }
 }
 </script>
+
+<style scoped>
+.zoom-in:hover img{
+  transform: scale(1.1);
+}
+.zoom-in img{
+  transition: 0.5s;
+}
+.zoom-in .frame{
+  overflow: hidden;
+}
+</style>

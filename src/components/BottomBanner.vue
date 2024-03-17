@@ -16,6 +16,52 @@
     </div>
   </div>
 </template>
+
+<script>
+import { ref } from 'vue'
+import { notify } from '@/api/toast.js'
+import Swal from 'sweetalert2'
+
+export default {
+  setup () {
+    const imgUrl = 'https://images.unsplash.com/photo-1551578657-a7e74acb0135?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8Y2hvY29sYXRlfGVufDB8MHwwfHx8MA%3D%3D'
+    const bg = `background-image:url(${imgUrl});`
+    const email = ref(null)
+    const checkEmail = () => {
+      const validate = /^\w+((-\w+)|(\.\w+))*@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z]+$/
+      const result = validate.test(email.value)
+      if (!result) notify(false, '信箱格式錯誤')
+      else {
+        Swal.fire({
+          icon: 'info', // error\warning\info\question
+          title: '訂閱優惠碼',
+          text: 'newcustomer',
+          showCancelButton: true,
+          confirmButtonColor: 'green',
+          cancelButtonColor: 'gray',
+          confirmButtonText: '複製',
+          cancelButtonText: '取消'
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            navigator.clipboard.writeText('newcustomer')
+              .then(() => {
+                notify(true, '複製成功')
+              })
+          } else if (result.isDenied) {
+            notify(false, '取消動作')
+          }
+        })
+      }
+    }
+    return {
+      email,
+      checkEmail,
+      bg
+    }
+  }
+}
+</script>
+
 <style scoped>
 .fixed-input{
     max-width: 400px;
@@ -78,47 +124,3 @@
     transition: .3s linear all;
 }
 </style>
-<script>
-import { ref } from 'vue'
-import { notify } from '@/api/toast.js'
-import Swal from 'sweetalert2'
-
-export default {
-  setup (props) {
-    const imgUrl = 'https://images.unsplash.com/photo-1551578657-a7e74acb0135?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8Y2hvY29sYXRlfGVufDB8MHwwfHx8MA%3D%3D'
-    const bg = `background-image:url(${imgUrl});`
-    const email = ref(null)
-    const checkEmail = () => {
-      const validate = /^\w+((-\w+)|(\.\w+))*@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z]+$/
-      const result = validate.test(email.value)
-      if (!result) notify(false, '信箱格式錯誤')
-      else {
-        Swal.fire({
-          icon: 'info', // error\warning\info\question
-          title: '訂閱優惠碼',
-          text: 'newcustomer',
-          showCancelButton: true,
-          confirmButtonColor: 'green',
-          cancelButtonColor: 'gray',
-          confirmButtonText: '複製',
-          cancelButtonText: '取消'
-        }).then(async (result) => {
-          if (result.isConfirmed) {
-            navigator.clipboard.writeText('newcustomer')
-              .then(() => {
-                notify(true, '複製成功')
-              })
-          } else if (result.isDenied) {
-            notify(false, '取消動作')
-          }
-        })
-      }
-    }
-    return {
-      email,
-      checkEmail,
-      bg
-    }
-  }
-}
-</script>

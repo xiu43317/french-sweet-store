@@ -3,7 +3,7 @@
     <div class="col-md-4">
       <img
         :src="cart.product.imageUrl"
-        alt=""
+        :alt="cart.product.title"
         class="img-fluid object-fit-cover"
       />
     </div>
@@ -35,6 +35,7 @@
           </div>
         <div class="ms-3 d-flex flex-column justify-content-center">
           <button type="button" class="bg-white border-0" @click="deleteItem()" :disabled="addBtnState">
+            <font-awesome-icon icon="spinner" class="fa-spin" v-show="cartLoading"/>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="32"
@@ -57,13 +58,7 @@
   </div>
   <hr/>
 </template>
-<style scoped>
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-</style>
+
 <script>
 import { ref, onMounted } from 'vue'
 import { useCartStore } from '@/stores/cart.js'
@@ -79,11 +74,11 @@ export default {
     const { getCart, deleteCart, updateCart, changeAddStatus } = cartStore
     const { addBtnState } = storeToRefs(cartStore)
     const qty = ref(props.cart.qty)
+    const cartLoading = ref(false)
     const myQty = ref(null)
     let tempQty = 0
     const isRenewing = ref(false)
     const deleteItem = async () => {
-      changeAddStatus(true)
       Swal.fire({
         icon: 'warning', // error\warning\info\question
         title: `確定刪除${props.cart.product.title}`,
@@ -95,19 +90,37 @@ export default {
         cancelButtonText: '取消'
       }).then(async (result) => {
         if (result.isConfirmed) {
+          cartLoading.value = true
+          changeAddStatus(true)
           await deleteCart(props.cart.id)
             .then((res) => {
-              notify(true, `${props.cart.product.title}${res.data.message}`)
+              changeAddStatus(false)
+              cartLoading.value = false
+              Swal.fire({
+                title: '刪除成功',
+                text: `${props.cart.product.title}${res.data.message}`,
+                icon: 'success'
+              })
+                .then((result) => {
+                  if (result.isConfirmed) {
+                    getCart()
+                  }
+                })
             })
             .catch((err) => {
-              notify(false, `${err.response.data.message}`)
+              cartLoading.value = false
+              changeAddStatus(false)
+              Swal.fire({
+                title: '刪除失敗',
+                text: `${err.response.data.message}`,
+                icon: 'error'
+              })
             })
-          await getCart()
         } else if (result.isDenied) {
           notify(false, '動作取消')
+          changeAddStatus(false)
         }
       })
-      changeAddStatus(false)
     }
     const addQty = async () => {
       changeAddStatus(true)
@@ -194,9 +207,18 @@ export default {
       updateQty,
       deleteItem,
       isRenewing,
+      cartLoading,
       addBtnState,
       changeAddStatus
     }
   }
 }
 </script>
+
+<style scoped>
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+</style>

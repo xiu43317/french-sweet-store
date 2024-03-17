@@ -61,6 +61,7 @@
     </div>
   </div>
 </template>
+
 <script>
 import { Modal } from 'bootstrap'
 import { ref, onMounted } from 'vue'
@@ -100,7 +101,6 @@ export default {
         const newQty = cart.value.carts[index].qty + myQty.value
         const cartId = cart.value.carts[index].id
         item.data.qty = newQty
-        // console.log(item.data.qty)
         await updateCart(cartId, item)
           .then((res) => {
             notify(true, `${tempProduct.value.title}${res.data.message}`)

@@ -41,6 +41,7 @@
     </div>
   </div>
 </template>
+
 <script>
 import { Modal } from 'bootstrap'
 import { ref, onMounted } from 'vue'
@@ -70,28 +71,5 @@ export default {
       delCouponModal
     }
   }
-  /*
-  data () {
-    return {
-      myCoupon: {},
-      delModal: ''
-    }
-  },
-  props: ['coupon'],
-  methods: {
-    openModal () {
-      this.delModal.show()
-    },
-    closeModal () {
-      this.delModal.hide()
-    },
-    deleteCoupon () {
-      this.$emit('deleteCoupon', this.coupon.id)
-    }
-  },
-  mounted () {
-    this.delModal = new Modal(this.$refs.delCouponModal)
-  }
-  */
 }
 </script>

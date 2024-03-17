@@ -40,6 +40,7 @@
     </ul>
   </nav>
 </template>
+
 <script>
 export default {
   emits: ['emit-page'],

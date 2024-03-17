@@ -15,9 +15,9 @@
       </button>
       <router-link to="/introduction" class="navbar-brand">
         <img
-          src="@/assets/logo-removebg.png"
+          src="@/assets/img/logo-removebg.png"
           height="80"
-          alt=""
+          alt="羅傑之家"
         />
       </router-link>
       <a
@@ -46,19 +46,19 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav mx-auto h4 nav-underline text-center">
           <li class="nav-item">
-            <router-link to="/aboutus" class="nav-link">關於我們</router-link>
+            <router-link to="/aboutus" class="nav-link" data-toggle>關於我們</router-link>
           </li>
           <li class="nav-item">
-            <router-link to="/news" class="nav-link">最新消息</router-link>
+            <router-link to="/news" class="nav-link" data-toggle>最新消息</router-link>
           </li>
           <li class="nav-item">
-            <router-link to="/products" class="nav-link">產品一覽</router-link>
+            <router-link to="/products" class="nav-link" data-toggle>產品一覽</router-link>
           </li>
           <li class="nav-item">
-            <router-link to="/notice" class="nav-link">購買須知</router-link>
+            <router-link to="/notice" class="nav-link" data-toggle>購買須知</router-link>
           </li>
           <li class="nav-item">
-            <router-link to="/orders" class="nav-link">訂單查詢</router-link>
+            <router-link to="/orders" class="nav-link" data-toggle>訂單查詢</router-link>
           </li>
         </ul>
       </div>
@@ -123,8 +123,10 @@
   </div>
   <UpArrow/>
 </template>
+
 <script>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { Collapse } from 'bootstrap'
 import { useRouter } from 'vue-router'
 import CartItem from '@/components/CartItem.vue'
 import BottomBanner from '@/components/BottomBanner.vue'
@@ -137,7 +139,7 @@ import { delFloat } from '@/api/math.js'
 
 export default {
   components: { BottomBanner, CartItem, UpArrow },
-  setup (props) {
+  setup () {
     const removeItem = ref(true)
     const cartStore = useCartStore()
     const isLoading = ref(false)
@@ -166,11 +168,18 @@ export default {
         if (result.isConfirmed) {
           await deleteAllCart()
             .then((res) => {
-              notify(true, `全部${res.data.message}`)
+              Swal.fire({
+                title: '刪除成功',
+                text: `全部${res.data.message}`,
+                icon: 'success'
+              })
             })
             .catch((err) => {
-              console.log(err.response.data.message)
-              notify(false, `${err.response.data.message}`)
+              Swal.fire({
+                title: '刪除失敗',
+                text: `${err.response.data.message}`,
+                icon: 'error'
+              })
             })
           isLoading.value = true
           clearButtoonDisable.value = true
@@ -198,10 +207,18 @@ export default {
           isBtnDisabled.value = true
           await deleteCart(cart.id)
             .then((res) => {
-              notify(true, `${cart.product.title}${res.data.message}`)
+              Swal.fire({
+                title: '刪除成功',
+                text: `${cart.product.title}${res.data.message}`,
+                icon: 'success'
+              })
             })
             .catch((err) => {
-              notify(false, `${err.response.data.message}`)
+              Swal.fire({
+                title: '刪除失敗',
+                text: `${err.response.data.message}`,
+                icon: 'error'
+              })
             })
           await getCart()
           isBtnDisabled.value = false
@@ -211,6 +228,19 @@ export default {
         }
       })
     }
+    onMounted(() => {
+      const dataToggle = document.querySelectorAll('[data-toggle]')
+      const menuToggle = document.getElementById('navbarNav')
+      const bsCollapse = new Collapse(menuToggle, {
+        toggle: false
+      })
+
+      dataToggle.forEach((item) => {
+        item.addEventListener('click', () => {
+          bsCollapse.toggle()
+        })
+      })
+    })
     return {
       isBtnDisabled,
       clearButtoonDisable,

@@ -41,6 +41,7 @@
     </div>
   </div>
 </template>
+
 <script>
 import { Modal } from 'bootstrap'
 import { ref, onMounted } from 'vue'
@@ -70,28 +71,5 @@ export default {
       hideModal
     }
   }
-
-  /*
-  data () {
-    return {
-      delModal: ''
-    }
-  },
-  props: ['product'],
-  methods: {
-    deleteProduct () {
-      this.$emit('deleteItem', this.product.id)
-    },
-    openModal () {
-      this.delModal.show()
-    },
-    hideModal () {
-      this.delModal.hide()
-    }
-  },
-  mounted () {
-    this.delModal = new Modal(document.querySelector('#delProductModal'))
-  }
-  */
 }
 </script>

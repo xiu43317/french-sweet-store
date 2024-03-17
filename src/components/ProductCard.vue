@@ -4,7 +4,7 @@
         <img
           :src="tempProduct.imageUrl"
           class="card-img-top img-fluid object-fit-cover"
-          alt="..."
+          :alt="tempProduct.title"
           style="height: 250px;"
         />
         <div class="title-bg position-absolute w-100 top-0
@@ -90,7 +90,6 @@ export default {
         const newQty = cart.value.carts[index].qty + 1
         const cartId = cart.value.carts[index].id
         item.data.qty = newQty
-        // console.log(item.data.qty)
         await updateCart(cartId, item)
           .then((res) => {
             notify(true, `${title}${res.data.message}`)

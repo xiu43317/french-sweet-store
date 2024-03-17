@@ -14,7 +14,7 @@
           <img
             class="img-fluid object-fit-cover w-100 mb-2"
             :src="tempProduct.imageUrl"
-            alt=""
+            :alt="tempProduct.title"
             style="max-height: 400px"
             data-aos="zoom-in"
           />
@@ -63,6 +63,7 @@
     </div>
   </div>
 </template>
+
 <script setup>
 import { useRoute } from 'vue-router'
 import { ref, onMounted } from 'vue'
@@ -75,7 +76,6 @@ const cartStore = useCartStore()
 const { createCart, updateCart, getCart } = cartStore
 const { cart } = storeToRefs(cartStore)
 const route = useRoute()
-// console.log(route.params.id)
 const isSpinning = ref(false)
 const isLoading = ref(false)
 const myQty = ref(1)
@@ -85,12 +85,10 @@ const getProduct = () => {
   api
     .getProduct(route.params.id)
     .then((res) => {
-      // console.log(res.data)
       tempProduct.value = res.data.product
       isLoading.value = false
     })
     .catch((err) => {
-      // console.log(err.response.data.message)
       notify(false, err.response.data.message)
       isLoading.value = false
     })
@@ -109,7 +107,6 @@ const addToCart = async () => {
     const newQty = cart.value.carts[index].qty + myQty.value
     const cartId = cart.value.carts[index].id
     item.data.qty = newQty
-    // console.log(item.data.qty)
     await updateCart(cartId, item)
       .then((res) => {
         notify(true, `${tempProduct.value.title}${res.data.message}`)

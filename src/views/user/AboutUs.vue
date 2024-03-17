@@ -7,7 +7,7 @@
       <div class="col-12 col-lg-6" data-aos="fade-right" data-aos-duration="1000" data-aos-once="false">
         <img
           src="https://images.unsplash.com/photo-1519733870-f96bef9bc85f?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZGVzc2VydCUyMGNoZWZ8ZW58MHx8MHx8fDA%3D"
-          alt=""
+          alt="創店起因"
           class="img-fluid object-fit-cover rounded"
         />
       </div>
@@ -27,7 +27,7 @@
       <div class="col-12 col-lg-6 order-lg-1" data-aos="fade-left" data-aos-duration="1000" data-aos-once="false">
         <img
           src="https://plus.unsplash.com/premium_photo-1664474581687-080655b479fd?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8ZGVzc2VydCUyMGNoZWZ8ZW58MHx8MHx8fDA%3D"
-          alt=""
+          alt="食材嚴格挑選"
           class="img-fluid object-fit-cover rounded"
         />
       </div>
@@ -47,7 +47,7 @@
       <div class="col-12 col-lg-6" data-aos="fade-right" data-aos-duration="1000" data-aos-once="false">
         <img
           src="https://plus.unsplash.com/premium_photo-1664478052858-d137d26e2cfd?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTN8fGRlc3NlcnQlMjBjaGVmfGVufDB8fDB8fHww"
-          alt=""
+          alt="持續創新"
           class="img-fluid object-fit-cover rounded"
         />
       </div>
@@ -66,6 +66,7 @@
     </div>
   </div>
 </template>
+
 <script>
 export default {
   setup (props) {

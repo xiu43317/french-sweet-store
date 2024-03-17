@@ -25,11 +25,7 @@
     </div>
   </div>
 </template>
-<style scoped>
-.mh-400{
-    min-height: 400px;
-}
-</style>
+
 <script>
 import { useRouter } from 'vue-router'
 
@@ -45,3 +41,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.mh-400{
+    min-height: 400px;
+}
+</style>

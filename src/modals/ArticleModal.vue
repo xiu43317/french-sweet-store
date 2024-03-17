@@ -37,6 +37,7 @@
               </div>
               <div class="mb-3">
                 <img :src="tempArticle.imageUrl"
+                     alt=""
                      class="img-fluid object-fit-cover">
                 <label for="image" class="form-label">輸入圖片網址</label>
                 <input
@@ -165,11 +166,7 @@
     </div>
   </div>
 </template>
-<style>
-.ck-editor__editable_inline {
-  min-height: 300px;
-}
-</style>
+
 <script>
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 import axios from 'axios'
@@ -213,7 +210,6 @@ export default {
           tempArticle.value.imageUrl = res.data.imageUrl
         })
         .catch((err) => {
-          // console.dir(err)
           alert(err.response.data.message)
         })
     }
@@ -249,66 +245,11 @@ export default {
       updateArticle
     }
   }
-
-  /*
-  data () {
-    return {
-      create_at: 0,
-      tempArticle: {
-        tag: []
-      },
-      articleModal: '',
-      editor: ClassicEditor,
-      editorConfig: {
-        toolbar: ['heading', 'bold', 'italic', '|', 'link']
-      }
-    }
-  },
-  props: ['article', 'isNew'],
-  methods: {
-    openModal () {
-      this.articleModal.show()
-    },
-    closeModal () {
-      this.articleModal.hide()
-    },
-    uploadFile () {
-      // console.dir(this.fileInput)
-      const file = this.fileInput.files[0]
-      // console.log(file)
-      const formData = new FormData()
-      formData.append('file-to-upload', file)
-      this.$http
-        .post(`${url}/api/${path}/admin/upload`, formData)
-        .then((res) => {
-          // console.log(res.data.imageUrl)
-          this.tempArticle.imageUrl = res.data.imageUrl
-        })
-        .catch((err) => {
-          // console.dir(err)
-          alert(err.response.data.message)
-        })
-    }
-  },
-  watch: {
-    article () {
-      this.tempArticle = {
-        ...this.article,
-        tag: this.article.tag || [],
-        isPublic: this.article.isPublic || false
-      }
-      this.create_at = new Date(this.tempArticle.create_at * 1000)
-        .toISOString()
-        .split('T')[0]
-    },
-    create_at () {
-      this.tempArticle.create_at = Math.floor(new Date(this.create_at) / 1000)
-    }
-  },
-  mounted () {
-    this.articleModal = new Modal(this.$refs.modal)
-    this.fileInput = this.$refs.formFile
-    this.fileInput.addEventListener('change', this.uploadFile)
-  } */
 }
 </script>
+
+<style>
+.ck-editor__editable_inline {
+  min-height: 300px;
+}
+</style>

@@ -26,6 +26,7 @@
     </transition>
   </div>
 </template>
+
 <script>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 export default {
@@ -54,6 +55,7 @@ export default {
   }
 }
 </script>
+
 <style>
 .v-enter-active,
 .v-leave-active {
