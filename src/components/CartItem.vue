@@ -10,9 +10,16 @@
       <div class="col-8 d-flex justify-content-between">
         <div class="d-flex flex-column justify-content-evenly">
           <p class="lh-sm fw-bold fs-5">{{ props.cart.product.title }}</p>
-          <span>NT$ {{ props.cart.product.price }} x {{ props.cart.qty }}</span>
+          <div class="d-flex align-items-center">
+          <span>NT$ {{ props.cart.product.price }} x </span>
+          <input type="number" class="form-control ms-2" min="1"
+          :disabled="props.isBtnDisabled"
+          v-model="myQty"
+          style="width: 60px; height: 30px;"
+          @change="updateItem()">
+          </div>
           <span v-if="props.cart.total===props.cart.final_total">小計：NT$ {{props.cart.total}}</span>
-          <span class="text-success" v-else>折扣價：NT$ {{ delFloat(props.cart.final_total) }}</span>
+          <span class="text-success mt-1" v-else>折扣價：NT$ {{ delFloat(props.cart.final_total) }}</span>
         </div>
         <a href="#" class="my-auto link-dark" @click.prevent="deleteItem()" v-if="props.isRemovable" :disabled="props.isBtnDisabled">
           <font-awesome-icon icon="spinner" class="fa-spin" v-show="isLoading && props.isBtnDisabled"/>
@@ -41,15 +48,34 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { delFloat } from '@/api/math.js'
+import { notify } from '@/api/toast.js'
 
 const props = defineProps(['cart', 'isRemovable', 'isBtnDisabled'])
-const emits = defineEmits(['deleteItem'])
+const emits = defineEmits(['deleteItem', 'updateItem'])
 const deleteItem = () => {
   emits('deleteItem', props.cart)
   isLoading.value = true
 }
+const updateItem = () => {
+  if (myQty.value < 0) {
+    notify(false, '數量不得小於1')
+    myQty.value = props.cart.qty
+  } else {
+    const cart = {
+      data: {
+        product_id: props.cart.product.id,
+        qty: myQty.value
+      }
+    }
+    emits('updateItem', props.cart.id, cart)
+  }
+}
+const myQty = ref(props.cart.qty)
 watch(() => props.isBtnDisabled, () => {
   if (!props.isBtnDisabled) isLoading.value = false
+})
+watch(() => props.cart, () => {
+  myQty.value = props.cart.qty
 })
 const isLoading = ref(false)
 </script>

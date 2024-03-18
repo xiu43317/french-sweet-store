@@ -82,6 +82,7 @@
     />
   </div>
 </template>
+
 <script>
 import EditProduct from '@/modals/Editmodal.vue'
 import DeleteProduct from '@/modals/DeleteModal.vue'

@@ -25,7 +25,7 @@
 
 <script>
 import OrderDetail from '@/components/OrderDetail.vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import api from '@/api/axios.js'
 import { ref } from 'vue'
 import { notify } from '@/api/toast.js'
@@ -33,9 +33,10 @@ import { notify } from '@/api/toast.js'
 export default {
   components: { OrderDetail },
   setup () {
+    const route = useRoute()
     const hideSearchBar = ref(false)
     const order = ref(null)
-    const orderId = ref(null)
+    const orderId = ref(route.query.id || null)
     const router = useRouter()
     const isLoading = ref(false)
     const getOrder = () => {

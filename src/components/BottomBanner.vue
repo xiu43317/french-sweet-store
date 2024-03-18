@@ -6,7 +6,7 @@
           <hgroup class="title-box">
             <h4 class>立即訂閱享8折優惠碼</h4>
             <div class="input-group  input-group-lg mt-5 mx-auto fixed-input">
-                <input v-model="email" type="email" class="form-control bg-white bg-opacity-50 text-dark" placeholder="請輸入信箱">
+                <input v-model="email" type="email" class="form-control bg-white bg-opacity-75 text-dark" placeholder="請輸入信箱">
                 <button @click="checkEmail()" class="btn btn-outline-light" type="submit"><i class="bi bi-arrow-right"></i></button>
             </div>
           </hgroup>
@@ -37,6 +37,7 @@ export default {
           title: '訂閱優惠碼',
           text: 'newcustomer',
           showCancelButton: true,
+          reverseButtons: true,
           confirmButtonColor: 'green',
           cancelButtonColor: 'gray',
           confirmButtonText: '複製',
@@ -45,7 +46,10 @@ export default {
           if (result.isConfirmed) {
             navigator.clipboard.writeText('newcustomer')
               .then(() => {
-                notify(true, '複製成功')
+                Swal.fire({
+                  icon: 'success',
+                  title: '複製成功'
+                })
               })
           } else if (result.isDenied) {
             notify(false, '取消動作')
@@ -98,13 +102,13 @@ export default {
     margin: auto;
     width: 100%;
     height: 100%;
-    background-color: #fff;
-    opacity: .06;
+    background-color: #000;
+    opacity: .3;
     z-index: 0;
 }
 
 .fixed-banner-wrap .wrap{
-  padding: 8rem 2rem;
+  padding: 6rem 2rem;
     position: relative;
     text-align: center;
     color: #fff;

@@ -1,18 +1,18 @@
 <template>
   <myLoading :active="isLoading"></myLoading>
   <div class="container">
-    <nav aria-label="breadcrumb">
+    <nav aria-label="breadcrumb" class="mt-3">
       <ol class="breadcrumb">
         <li class="breadcrumb-item">
-          <RouterLink to="/news">消息列表</RouterLink>
+          <RouterLink to="/news" class="fs-5 link-secondary text-decoration-none">消息列表</RouterLink>
         </li>
-        <li class="breadcrumb-item active" aria-current="page">
+        <li class="breadcrumb-item active text-success fs-5 fw-bold" aria-current="page">
           {{ article.title }}
         </li>
       </ol>
     </nav>
     <div class="row justify-content-center">
-      <article class="col-8">
+      <article class="col-lg-8">
         <h2>{{ article.title }}</h2>
         <p>
           <strong class="text-muted"><i class="bi bi-calendar"></i>

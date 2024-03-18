@@ -9,16 +9,19 @@
       </div>
         <h1>404</h1>
         <h2>這頁找不到</h2>
+        <a href="#/" class="fs-4">回首頁</a>
       </div>
     </div>
   </div>
 </template>
+
+<script>
+export default {
+}
+</script>
+
 <style scoped>
 .frame{
     max-width: 300px;
 }
 </style>
-<script>
-export default {
-}
-</script>

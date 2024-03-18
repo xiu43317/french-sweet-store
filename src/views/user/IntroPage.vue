@@ -6,7 +6,7 @@
       <div class="hero-text">
         <h1>歡迎光臨羅傑之家</h1>
         <p class="fs-4">我們提供法國道地的經典甜點</p>
-        <router-link to="/aboutUs" class="rounded fs-5">關於我們</router-link>
+        <router-link to="/products" class="rounded fs-5">產品一覽</router-link>
       </div>
     </div>
   </div>

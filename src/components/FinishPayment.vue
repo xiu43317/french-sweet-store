@@ -2,6 +2,7 @@
   <div class="container">
     <div class="d-flex justify-content-evenly flex-column align-items-center mh-400 py-3">
       <p class="fs-1 fw-bold">付款完成</p>
+      <span class="fs-3 text-center">你的訂單編號：{{ id }}</span>
       <div>
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -19,23 +20,36 @@
           />
         </svg>
       </div>
-      <button type="button" class="btn btn-lg btn-secondary py-2 px-5" @click="goToProducts()">
-        繼續選購
-      </button>
+      <div class="text-center">
+        <button type="button" class="btn btn-lg btn-secondary py-2 px-5 m-1" @click="goToProducts()">
+          繼續選購
+        </button>
+        <button type="button" class="btn btn-lg btn-outline-success py-2 px-5 m-1" @click="goToSearch()">
+          查詢訂單
+        </button>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { useRouter } from 'vue-router'
+import { ref } from 'vue'
 
 export default {
+  props: ['orderId'],
   setup (props) {
+    const id = ref(props.orderId)
     const router = useRouter()
     const goToProducts = () => {
       router.push('/products?categlory=all')
     }
+    const goToSearch = () => {
+      router.push(`/orders?id=${id.value}`)
+    }
     return {
+      id,
+      goToSearch,
       goToProducts
     }
   }

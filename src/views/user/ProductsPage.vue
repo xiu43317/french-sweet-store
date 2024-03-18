@@ -56,7 +56,6 @@
       </div>
     </div>
   </div>
-  <ProductDetailModal ref="modal" :product="tempProduct"/>
 </template>
 
 <script>
@@ -65,11 +64,10 @@ import { ref, onMounted } from 'vue'
 import ProductCard from '@/components/ProductCard.vue'
 import BottomPagination from '@/components/BottomPagination.vue'
 import api from '@/api/axios'
-import ProductDetailModal from '@/modals/ProductDetailModal.vue'
 
 export default {
-  components: { ProductCard, BottomPagination, ProductDetailModal },
-  setup (props) {
+  components: { ProductCard, BottomPagination },
+  setup () {
     const route = useRoute()
     const router = useRouter()
     const products = ref({})

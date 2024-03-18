@@ -1,14 +1,13 @@
 <template>
   <myLoading :active="isLoading"></myLoading>
   <div class="container">
-    <nav style="--bs-breadcrumb-divider: '>'" aria-label="breadcrumb">
+    <nav style="--bs-breadcrumb-divider: '>'" aria-label="breadcrumb" class="mt-3">
       <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="#/products">產品列表</a></li>
-        <li class="breadcrumb-item active" aria-current="page">產品資訊</li>
+        <li class="breadcrumb-item"><a class="link-secondary fs-5 text-decoration-none" href="#/products">產品列表</a></li>
+        <li class="breadcrumb-item text-success fw-bold fs-5" aria-current="page">產品資訊</li>
       </ol>
     </nav>
     <div v-if="tempProduct">
-      <h4 class="fs-3 fw-bold text-center mb-3">{{ tempProduct.title }}</h4>
       <div class="row">
         <div class="col-md-6">
           <img
@@ -19,17 +18,17 @@
             data-aos="zoom-in"
           />
         </div>
-        <div class="col-md-6 d-flex flex-column justify-content-evenly">
+        <div class="col-md-6 d-flex flex-column">
+          <h4 class="fs-1 fw-bold mb-3">{{ tempProduct.title }}</h4>
           <div>
             <span class="badge bg-success rounded-pill fs-6 mb-3">{{
               tempProduct.category
             }}</span>
           </div>
-          <p>尺寸/包裝：{{ tempProduct.description }}</p>
-          <p>商品資訊：{{ tempProduct.content }}</p>
-          <div class="h5">售價：NT$ {{ tempProduct.price }} 元</div>
-          <del class="h6">原價：NT$ {{ tempProduct.origin_price }} 元</del>
-          <div class="mt-3">
+          <p class="fs-5 my-3">尺寸/包裝：{{ tempProduct.description }}</p>
+          <div class="h4">售價：NT$ {{ tempProduct.price }} 元</div>
+          <del class="fs-6 mb-3">原價：NT$ {{ tempProduct.origin_price }} 元</del>
+          <div class="mb-2 mt-auto">
             <div class="input-group">
               <select
                 class="form-select"
@@ -45,7 +44,7 @@
               <button
                 :disabled="isSpinning"
                 type="button"
-                class="btn btn-outline-secondary"
+                class="btn btn-success"
                 @click="addToCart()"
               >
                 <font-awesome-icon
@@ -60,7 +59,17 @@
         </div>
         <!-- col-sm-6 end -->
       </div>
+      <hr>
     </div>
+    <div class="row mt-3">
+        <div class="col-lg-8 col-12">
+          <p class="fs-3">商品資訊：</p>
+          <p class="fs-4"> {{ tempProduct.content }} </p>
+          <br>
+          <p class="fs-3">保存方式：</p>
+          <p class="fs-4"> {{ tempProduct.presever }} </p>
+        </div>
+      </div>
   </div>
 </template>
 
@@ -79,7 +88,7 @@ const route = useRoute()
 const isSpinning = ref(false)
 const isLoading = ref(false)
 const myQty = ref(1)
-const tempProduct = ref(null)
+const tempProduct = ref({})
 const getProduct = () => {
   isLoading.value = true
   api

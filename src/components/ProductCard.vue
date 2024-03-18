@@ -27,35 +27,7 @@
       </div>
     </div>
 </template>
-<style scoped>
-  .card:hover img {
-    transform: scale(1.1);
-  }
-  .card:hover {
-    cursor: pointer;
-  }
-  .title-bg {
-    height: 250px;
-    background-color:rgba(0, 0, 0, 0.5);
-    z-index: -100;
-  }
-  .title-bg p{
-    transition: 0.5s;
-  }
-  .card:hover .title-bg p{
-    transform:translateY(-20px);
-    display: block;
-  }
-  .card:hover .title-bg {
-    z-index: 100;
-  }
-  .card img {
-    transition: 0.5s;
-  }
-  .card .bg-img {
-    overflow: hidden;
-  }
-</style>
+
 <script>
 import { ref } from 'vue'
 import { useCartStore } from '@/stores/cart'
@@ -129,3 +101,33 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+  .card:hover img {
+    transform: scale(1.1);
+  }
+  .card:hover {
+    cursor: pointer;
+  }
+  .title-bg {
+    height: 250px;
+    background-color:rgba(0, 0, 0, 0.5);
+    z-index: -100;
+  }
+  .title-bg p{
+    transition: 0.5s;
+  }
+  .card:hover .title-bg p{
+    transform:translateY(-80px);
+    display: block;
+  }
+  .card:hover .title-bg {
+    z-index: 100;
+  }
+  .card img {
+    transition: 0.5s;
+  }
+  .card .bg-img {
+    overflow: hidden;
+  }
+</style>

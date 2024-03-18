@@ -60,7 +60,7 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useCartStore } from '@/stores/cart.js'
 import { notify } from '@/api/toast'
 import { storeToRefs } from 'pinia'
@@ -84,6 +84,7 @@ export default {
         title: `確定刪除${props.cart.product.title}`,
         text: '刪除後的資料無法恢復',
         showCancelButton: true,
+        reverseButtons: true,
         confirmButtonColor: 'red',
         cancelButtonColor: 'gray',
         confirmButtonText: '確定',
@@ -164,7 +165,7 @@ export default {
       qty.value -= 1
       if (qty.value < 1) {
         notify(false, '數量不得小於1')
-        qty.value = 1
+        qty.value = props.cart.qty
         changeAddStatus(false)
         return
       }
@@ -192,11 +193,14 @@ export default {
       myQty.value.addEventListener('blur', () => {
         if (qty.value < 1) {
           notify(false, '數量不得小於1')
-          qty.value = 1
+          qty.value = props.cart.qty
         } else if (tempQty !== qty.value) {
           updateQty()
         }
       })
+    })
+    watch(() => props.cart.qty, () => {
+      qty.value = props.cart.qty
     })
     return {
       qty,

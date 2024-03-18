@@ -2,7 +2,7 @@
     <myLoading :active="isLoading"></myLoading>
     <FlowChart :outProgress="progress"/>
     <template v-if="isPaid">
-      <FinishPayment/>
+      <FinishPayment :orderId="order.id"/>
     </template>
     <template v-else>
       <OrderDetail :order="order" @payOrder="payOrder"/>

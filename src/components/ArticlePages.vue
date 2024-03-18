@@ -1,21 +1,25 @@
 <template>
     <div class="container mt-5">
-        <div class="row fs-5 text-center">
-            <strong v-if="prevPageId" class="col-md-6 mb-3 mb-md-0">
-              <router-link class="text-decoration-none link-dark" :to="`/onenews/${prevPageId.id}/num/${prevPageId.num}`">
-                <i class="bi bi-chevron-double-left"></i>
-                較舊一篇：{{ prevPageId.title }}
-              </router-link>
-            </strong>
-            <strong v-else class="col-md-6 mb-3 mb-md-0"><span>  </span></strong>
-              <strong v-if="nextPageId" class="col-md-6">
-                <router-link class="text-decoration-none link-dark" :to="`/onenews/${nextPageId.id}/num/${nextPageId.num}`">
-                  較新一篇：{{ nextPageId.title }}
-                  <i class="bi bi-chevron-double-right"></i>
+      <div class="row">
+        <div class="col-lg-8 mx-auto">
+          <div class="row fs-5">
+              <strong v-if="prevPageId" class="col-md-6 mb-3 mb-md-0">
+                <router-link class="text-decoration-none link-dark" :to="`/onenews/${prevPageId.id}/num/${prevPageId.num}`">
+                  <i class="bi bi-chevron-double-left"></i>
+                  較舊一篇：{{ prevPageId.title }}
                 </router-link>
-            </strong>
-            <strong v-else class="col-md-6">  </strong>
+              </strong>
+              <strong v-else class="col-md-6 mb-3 mb-md-0"><span>  </span></strong>
+                <strong v-if="nextPageId" class="col-md-6 text-end">
+                  <router-link class="text-decoration-none link-dark" :to="`/onenews/${nextPageId.id}/num/${nextPageId.num}`">
+                    較新一篇：{{ nextPageId.title }}
+                    <i class="bi bi-chevron-double-right"></i>
+                  </router-link>
+              </strong>
+              <strong v-else class="col-md-6 text-end">  </strong>
+          </div>
         </div>
+      </div>
     </div>
 </template>
 
@@ -51,8 +55,6 @@ const getPages = () => {
   } else if (num === 1) {
     // 全部的最後一頁
     nextPageId.value = ''
-    // console.log('next', nextPageId.value)
-    // console.log('nextNum', 0)
     api.getArticles(1)
       .then((res) => {
         prevPageId.value = res.data.articles.filter(item => item.num === num + 1)[0]

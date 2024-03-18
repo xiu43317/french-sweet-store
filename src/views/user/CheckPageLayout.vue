@@ -5,12 +5,6 @@
     <div class="my-5 row justify-content-center">
       <div class="col-lg-6">
         <h4 class="text-center">購物車資訊</h4>
-        <div class="mt-3 text-end">
-          <button type="button" class="btn btn-outline-success" @click="clearCart()" :disabled="addBtnState || !cart.total">
-            <font-awesome-icon icon="spinner" class="fa-spin" v-show="cartLoading"/>
-            清空購物車
-          </button>
-        </div>
         <hr />
         <div class="text-center my-5" v-if="!cart.total">
           <p class="fs-4 fw-bold">你的購物車現在沒東西喔!</p>
@@ -44,6 +38,12 @@
             <span class="fs-4 fw-bold" v-else>總計：NT$ {{ cart.total }}</span>
           </div>
         </div>
+        <div class="mt-1">
+          <button type="button" class="btn btn-outline-success" @click="clearCart()" :disabled="addBtnState || !cart.total">
+            <font-awesome-icon icon="spinner" class="fa-spin" v-show="cartLoading"/>
+            清空購物車
+          </button>
+        </div>
       </div>
       <div class="col-lg-6">
         <h4 class="text-center">訂購人資訊</h4>
@@ -51,7 +51,9 @@
         <v-form @submit="goToPayment()"
         class="bg-light p-3 rounded" ref="form" v-slot="{ errors }">
           <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
+            <label for="email" class="form-label">
+              <span class="text-danger">*</span>
+              Email</label>
             <v-field
               id="email"
               name="email"
@@ -69,7 +71,9 @@
           </div>
 
           <div class="mb-3">
-            <label for="name" class="form-label">收件人姓名</label>
+            <label for="name" class="form-label">
+              <span class="text-danger">*</span>
+              收件人姓名</label>
             <v-field
               id="name"
               name="姓名"
@@ -84,7 +88,9 @@
           </div>
 
           <div class="mb-3">
-            <label for="tel" class="form-label">收件人電話</label>
+            <label for="tel" class="form-label">
+              <span class="text-danger">*</span>
+              收件人電話</label>
             <v-field
               id="tel"
               name="電話"
@@ -99,7 +105,9 @@
           </div>
 
           <div class="mb-3">
-            <label for="address" class="form-label">收件人地址</label>
+            <label for="address" class="form-label">
+              <span class="text-danger">*</span>
+              收件人地址</label>
             <v-field
               id="address"
               name="地址"
@@ -162,8 +170,13 @@ export default {
       }
       await useCoupon(coupon)
         .then((res) => {
-          notify(true, res.data.message)
-          getCart()
+          Swal.fire({
+            icon: 'success',
+            title: res.data.message
+          })
+            .then((result) => {
+              if (result.isConfirmed) getCart()
+            })
         })
         .catch((err) => {
           notify(false, err.response.data.message)
@@ -176,6 +189,7 @@ export default {
         title: '確定刪除整個購物車？',
         text: '刪除後的資料無法恢復',
         showCancelButton: true,
+        reverseButtons: true,
         confirmButtonColor: 'red',
         cancelButtonColor: 'gray',
         confirmButtonText: '確定',

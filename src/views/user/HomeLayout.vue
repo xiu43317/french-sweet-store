@@ -40,7 +40,7 @@
             d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5M3.14 5l.5 2H5V5zM6 5v2h2V5zm3 0v2h2V5zm3 0v2h1.36l.5-2zm1.11 3H12v2h.61zM11 8H9v2h2zM8 8H6v2h2zM5 8H3.89l.5 2H5zm0 5a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0m9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0"
           />
         </svg>
-        <div class="rounded-circle bg-danger position-absolute start-100 translate-middle d-flex justify-content-center align-items-center"
+        <div v-if="cart.carts.length" class="rounded-circle bg-danger position-absolute start-100 translate-middle d-flex justify-content-center align-items-center"
              style="width: 20px; height: 20px; top: 5px;" v-show="cart.carts.length"><span class="text-white">{{ cart.carts.length }}</span></div>
       </a>
       <div class="collapse navbar-collapse" id="navbarNav">
@@ -110,6 +110,7 @@
       <!-- 做成元件 -->
       <CartItem v-for="item in cart.carts" :key="item.id"
       :cart="item" :isRemovable="removeItem" :isBtnDisabled="isBtnDisabled"
+      @update-item="updateItem"
       @delete-item="deleteItem"/>
       <!-- 做成元件 -->
       <p class="h4 text-success" v-if="cart.final_total !== cart.total">折扣價：NT$ {{ delFloat(cart.final_total) }}</p>
@@ -144,7 +145,7 @@ export default {
     const cartStore = useCartStore()
     const isLoading = ref(false)
     const clearButtoonDisable = ref(false)
-    const { getCart, deleteAllCart, deleteCart } = cartStore
+    const { getCart, deleteAllCart, deleteCart, updateCart } = cartStore
     const { cart } = storeToRefs(cartStore)
     const router = useRouter()
     const isBtnDisabled = ref(false)
@@ -160,6 +161,7 @@ export default {
         title: '確定刪除整個購物車？',
         text: '刪除後的資料無法恢復',
         showCancelButton: true,
+        reverseButtons: true,
         confirmButtonColor: 'red',
         cancelButtonColor: 'gray',
         confirmButtonText: '確定',
@@ -197,10 +199,11 @@ export default {
         title: `確定刪除${cart.product.title}`,
         text: '刪除後的資料無法恢復',
         showCancelButton: true,
-        confirmButtonColor: 'red',
         cancelButtonColor: 'gray',
+        confirmButtonColor: 'red',
+        cancelButtonText: '取消',
         confirmButtonText: '確定',
-        cancelButtonText: '取消'
+        reverseButtons: true
       }).then(async (result) => {
         if (result.isConfirmed) {
           clearButtoonDisable.value = true
@@ -228,6 +231,19 @@ export default {
         }
       })
     }
+    const updateItem = (id, cart) => {
+      isBtnDisabled.value = true
+      updateCart(id, cart)
+        .then((res) => {
+          notify(true, res.data.message)
+          isBtnDisabled.value = false
+          getCart()
+        })
+        .catch((err) => {
+          notify(false, err.response.data.message)
+          isBtnDisabled.value = false
+        })
+    }
     onMounted(() => {
       const dataToggle = document.querySelectorAll('[data-toggle]')
       const menuToggle = document.getElementById('navbarNav')
@@ -242,6 +258,7 @@ export default {
       })
     })
     return {
+      updateItem,
       isBtnDisabled,
       clearButtoonDisable,
       removeItem,
@@ -249,6 +266,7 @@ export default {
       deleteAllItems,
       deleteAllCart,
       deleteCart,
+      updateCart,
       deleteItem,
       cart,
       goToCheck,

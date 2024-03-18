@@ -182,6 +182,18 @@
                 >
                 </textarea>
               </div>
+              <div class="mb-3">
+                <label for="presever" class="form-label">保存方式</label>
+                <textarea
+                  name="presever"
+                  type="text"
+                  id="presever"
+                  class="form-control"
+                  placeholder="請輸入保存方式"
+                  v-model="product.presever"
+                >
+                </textarea>
+              </div>
               <div class="mb-3 row">
                 <div class="mb-3 col-md-6">
                   <input
@@ -261,9 +273,10 @@ export default {
     const updateProduct = () => {
       if (props.isNew) {
         axios
-          .post(`${url}/api/${path}/admin/product`, { data: props.tempProduct })
+          .post(`${url}/api/${path}/admin/product`, { data: product.value })
           .then((res) => {
             alert(res.data.message)
+            product.value = {}
             getProducts()
             hideModal()
           })
@@ -273,10 +286,11 @@ export default {
       } else {
         axios
           .put(`${url}/api/${path}/admin/product/${props.tempProduct.id}`, {
-            data: props.tempProduct
+            data: product.value
           })
           .then((res) => {
             alert(res.data.message)
+            product.value = {}
             getProducts()
             hideModal()
           })
