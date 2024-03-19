@@ -13,7 +13,7 @@
           <div class="d-flex align-items-center">
           <span>NT$ {{ props.cart.product.price }} x </span>
           <input type="number" class="form-control ms-2" min="1"
-          :disabled="props.isBtnDisabled"
+          :disabled="props.isBtnDisabled || !props.isRemovable"
           v-model="myQty"
           style="width: 60px; height: 30px;"
           @change="updateItem()">
