@@ -271,32 +271,36 @@ export default {
     const myNew = ref(false)
     const modal = ref(null)
     const updateProduct = () => {
-      if (props.isNew) {
-        axios
-          .post(`${url}/api/${path}/admin/product`, { data: product.value })
-          .then((res) => {
-            alert(res.data.message)
-            product.value = {}
-            getProducts()
-            hideModal()
-          })
-          .catch((error) => {
-            alert(error.response.data.message)
-          })
+      if (product.value.origin_price < 1 || product.value.price < 1) {
+        alert('價格不得小於1')
       } else {
-        axios
-          .put(`${url}/api/${path}/admin/product/${props.tempProduct.id}`, {
-            data: product.value
-          })
-          .then((res) => {
-            alert(res.data.message)
-            product.value = {}
-            getProducts()
-            hideModal()
-          })
-          .catch((error) => {
-            alert(error.response.data.message)
-          })
+        if (props.isNew) {
+          axios
+            .post(`${url}/api/${path}/admin/product`, { data: product.value })
+            .then((res) => {
+              alert(res.data.message)
+              product.value = {}
+              getProducts()
+              hideModal()
+            })
+            .catch((error) => {
+              alert(error.response.data.message)
+            })
+        } else {
+          axios
+            .put(`${url}/api/${path}/admin/product/${props.tempProduct.id}`, {
+              data: product.value
+            })
+            .then((res) => {
+              alert(res.data.message)
+              product.value = {}
+              getProducts()
+              hideModal()
+            })
+            .catch((error) => {
+              alert(error.response.data.message)
+            })
+        }
       }
     }
     const createImages = () => {

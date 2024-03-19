@@ -33,16 +33,20 @@
               </button>
             </div>
           </div>
-          <div class="col-md-6 my-3 d-flex flex-row-reverse align-items-center">
-            <span class="fs-4 fw-bold text-success" v-if="cart.final_total !== cart.total">折扣價：NT$ {{ delFloat(cart.final_total) }}</span>
-            <span class="fs-4 fw-bold" v-else>總計：NT$ {{ cart.total }}</span>
+          <div class="col-md-6 my-3">
+            <div class="row">
+            <span class="fs-4 fw-bold text-success col-md-12 col-7 text-end my-auto order-md-1 order-2" v-if="cart.final_total !== cart.total">折扣價：NT$ {{ delFloat(cart.final_total) }}</span>
+            <span class="fs-4 fw-bold col-md-12 col-6 col-7 text-end my-auto order-md-1 order-2" v-else>總計：NT$ {{ cart.total }}</span>
+              <div class="col-md-12 col-5 mt-md-4 text-md-end order-lg-2 order-1 my-auto">
+                <button type="button" class="btn btn-outline-success" @click="clearCart()" :disabled="addBtnState || !cart.total">
+                  <font-awesome-icon icon="spinner" class="fa-spin" v-show="cartLoading"/>
+                  清空購物車
+                </button>
+              </div>
+            </div>
           </div>
         </div>
         <div class="mt-1">
-          <button type="button" class="btn btn-outline-success" @click="clearCart()" :disabled="addBtnState || !cart.total">
-            <font-awesome-icon icon="spinner" class="fa-spin" v-show="cartLoading"/>
-            清空購物車
-          </button>
         </div>
       </div>
       <div class="col-lg-6">
