@@ -112,7 +112,6 @@
       </div>
     </div>
 </div>
-<ProductDetailModal ref="modal" :product="tempProduct"/>
 </template>
 
 <script>
@@ -127,7 +126,6 @@ import NewsCard from '@/components/NewsCard.vue'
 import ClassicDessert from '@/components/ClassicDessert.vue'
 import ProductCard from '@/components/ProductCard.vue'
 import api from '@/api/axios'
-import ProductDetailModal from '@/modals/ProductDetailModal.vue'
 import { notify } from '@/api/toast'
 
 export default {
@@ -136,8 +134,7 @@ export default {
     SwiperSlide,
     NewsCard,
     ClassicDessert,
-    ProductCard,
-    ProductDetailModal
+    ProductCard
   },
   setup () {
     const isLoading = ref(false)
@@ -151,7 +148,6 @@ export default {
     const products = ref(null)
     const tempProduct = ref({})
     const hotProducts = ref(null)
-    const modal = ref(null)
     const getArticles = (page) => {
       api.getArticles(page)
         .then((res) => {
@@ -184,7 +180,6 @@ export default {
     })
     return {
       isLoading,
-      modal,
       tempProduct,
       dataReady,
       hotProducts,

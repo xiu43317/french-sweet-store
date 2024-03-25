@@ -140,7 +140,6 @@ export default {
             getArticles()
           })
           .catch((err) => {
-            console.log(err)
             alert(err.response.data.message)
             articleModal.value.closeModal()
             isLoading.value = false
@@ -154,7 +153,6 @@ export default {
             getArticles()
           })
           .catch((err) => {
-            console.log(err)
             alert(err.response.data.message)
             articleModal.value.closeModal()
             isLoading.value = false

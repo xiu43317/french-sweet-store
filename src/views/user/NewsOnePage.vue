@@ -4,7 +4,7 @@
     <nav aria-label="breadcrumb" class="mt-3">
       <ol class="breadcrumb">
         <li class="breadcrumb-item">
-          <RouterLink to="/news" class="fs-5 link-secondary text-decoration-none">消息列表</RouterLink>
+          <router-link to="/news" class="fs-5 link-secondary text-decoration-none">消息列表</router-link>
         </li>
         <li class="breadcrumb-item active text-success fs-5 fw-bold" aria-current="page">
           {{ article.title }}
@@ -67,7 +67,7 @@ onMounted(() => {
 })
 watch(
   () => route.params.id,
-  async newId => {
+  async () => {
     await getArticle(route.params.id)
   }
 )

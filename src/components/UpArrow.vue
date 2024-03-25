@@ -4,6 +4,7 @@
   >
     <transition>
       <button
+        type="button"
         class="bg-transparent border-0 text-secondary fw-bold up-btn"
         v-show="isVisible"
         @click="scrollToTop"

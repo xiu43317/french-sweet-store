@@ -4,7 +4,7 @@
       <img
         :src="cart.product.imageUrl"
         :alt="cart.product.title"
-        class="img-fluid object-fit-cover"
+        class="img-fluid object-fit-cover h-100"
       />
     </div>
     <div class="col-md-8 d-flex justify-content-between align-items-center my-3 my-lg-0">
@@ -24,7 +24,7 @@
             <input
               v-model="qty"
               type="number"
-              class="form-control text-center rounded"
+              class="form-control text-center"
               placeholder="1"
               min="1"
               ref="myQty"
@@ -64,64 +64,23 @@ import { ref, onMounted, watch } from 'vue'
 import { useCartStore } from '@/stores/cart.js'
 import { notify } from '@/api/toast'
 import { storeToRefs } from 'pinia'
-import Swal from 'sweetalert2'
+// import Swal from 'sweetalert2'
 import { delFloat } from '@/api/math.js'
 
 export default {
   props: ['cart'],
-  setup (props) {
+  emits: ['deleteOneItem'],
+  setup (props, ctx) {
     const cartStore = useCartStore()
-    const { getCart, deleteCart, updateCart, changeAddStatus } = cartStore
+    const { getCart, updateCart, changeAddStatus } = cartStore
     const { addBtnState } = storeToRefs(cartStore)
     const qty = ref(props.cart.qty)
     const cartLoading = ref(false)
     const myQty = ref(null)
     let tempQty = 0
     const isRenewing = ref(false)
-    const deleteItem = async () => {
-      Swal.fire({
-        icon: 'warning', // error\warning\info\question
-        title: `確定刪除${props.cart.product.title}`,
-        text: '刪除後的資料無法恢復',
-        showCancelButton: true,
-        reverseButtons: true,
-        confirmButtonColor: 'red',
-        cancelButtonColor: 'gray',
-        confirmButtonText: '確定',
-        cancelButtonText: '取消'
-      }).then(async (result) => {
-        if (result.isConfirmed) {
-          cartLoading.value = true
-          changeAddStatus(true)
-          await deleteCart(props.cart.id)
-            .then((res) => {
-              changeAddStatus(false)
-              cartLoading.value = false
-              Swal.fire({
-                title: '刪除成功',
-                text: `${props.cart.product.title}${res.data.message}`,
-                icon: 'success'
-              })
-                .then((result) => {
-                  if (result.isConfirmed) {
-                    getCart()
-                  }
-                })
-            })
-            .catch((err) => {
-              cartLoading.value = false
-              changeAddStatus(false)
-              Swal.fire({
-                title: '刪除失敗',
-                text: `${err.response.data.message}`,
-                icon: 'error'
-              })
-            })
-        } else if (result.isDenied) {
-          notify(false, '動作取消')
-          changeAddStatus(false)
-        }
-      })
+    const deleteItem = () => {
+      ctx.emit('deleteOneItem', props.cart)
     }
     const addQty = async () => {
       changeAddStatus(true)
@@ -151,7 +110,7 @@ export default {
         }
       }
       await updateCart(props.cart.id, item)
-        .then((res) => {
+        .then(() => {
           notify(true, `${props.cart.product.title}已更新`)
         })
         .catch((err) => {

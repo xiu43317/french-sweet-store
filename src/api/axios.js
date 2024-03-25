@@ -3,7 +3,6 @@ const url = import.meta.env.VITE_APP_API_URL
 const path = import.meta.env.VITE_APP_API_NAME
 
 export default {
-  getFakeData: () => getFakeData(),
   getArticles: (page) => getArticles(page),
   getProducts: (page, category) => getProducts(page, category),
   getProduct: (id) => getProduct(id),
@@ -17,16 +16,6 @@ export default {
   sendOrder: (order) => sendOrder(order),
   getOrder: (orderId) => getOrder(orderId),
   payOrder: (orderId) => payOrder(orderId)
-}
-
-const getFakeData = () => {
-  axios.get('https://jsonplaceholder.typicode.com/todos/1')
-    .then((res) => {
-      console.log(res)
-    })
-    .catch((err) => {
-      console.log(err)
-    })
 }
 const getArticles = (page = 1) => {
   return axios.get(`${url}/api/${path}/articles?page=${page}`)
@@ -43,9 +32,6 @@ const getArticle = (id) => {
 }
 const getCart = async () => {
   return await axios.get(`${url}/api/${path}/cart`)
-    .catch((err) => {
-      console.log(err)
-    })
 }
 const createCart = async (cart) => {
   return await axios.post(`${url}/api/${path}/cart`, cart)

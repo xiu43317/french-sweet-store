@@ -20,7 +20,7 @@
         <p class="card-text fs-5">
           NT$ {{ tempProduct.price }}
         </p>
-        <button class="btn btn-outline-secondary w-100" @click.stop="addToCart()" :disabled="addBtnState">
+        <button type="button" class="btn btn-outline-secondary w-100" @click.stop="addToCart()" :disabled="addBtnState">
           <font-awesome-icon icon="spinner" class="fa-spin" v-show="isSpinning"/>
           加入購物車
         </button>

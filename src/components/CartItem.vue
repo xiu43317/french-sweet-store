@@ -7,26 +7,42 @@
         style="height: 100px"
         :alt="props.cart.product.title"
       />
-      <div class="col-8 d-flex justify-content-between">
+      <div class="col-8 d-flex justify-content-between align-items-center">
         <div class="d-flex flex-column justify-content-evenly">
-          <p class="lh-sm fw-bold fs-5">{{ props.cart.product.title }}</p>
-          <div class="d-flex align-items-center">
-          <span>NT$ {{ props.cart.product.price }} x </span>
-          <input type="number" class="form-control ms-2" min="1"
-          :disabled="props.isBtnDisabled || !props.isRemovable"
-          v-model="myQty"
-          style="width: 60px; height: 30px;"
-          @change="updateItem()">
-          </div>
-          <span v-if="props.cart.total===props.cart.final_total">小計：NT$ {{props.cart.total}}</span>
-          <span class="text-success mt-1" v-else>折扣價：NT$ {{ delFloat(props.cart.final_total) }}</span>
+          <span class="fw-bold">{{ props.cart.product.title }}</span>
+          <span v-if="props.cart.total===props.cart.final_total">小計：</span>
+          <span class="text-success mt-1" v-else>折扣價:</span>
+          <span v-if="props.cart.total===props.cart.final_total">NT$ {{props.cart.total}}</span>
+          <span class="text-success mt-1" v-else>NT$ {{ delFloat(props.cart.final_total) }}</span>
         </div>
-        <a href="#" class="my-auto link-dark" @click.prevent="deleteItem()" v-if="props.isRemovable" :disabled="props.isBtnDisabled">
-          <font-awesome-icon icon="spinner" class="fa-spin" v-show="isLoading && props.isBtnDisabled"/>
+        <div class="d-flex align-items-center">
+          <span v-if="!props.isRemovable" class="fs-5">數量：</span>
+          <div class="input-group" style="max-width: 100px;">
+          <button :disabled="props.isBtnDisabled || !props.isRemovable"
+          v-if="props.isRemovable"
+          class="btn btn-sm btn-secondary border-0" type="button" @click="removeItem()">
+              <i class="bi bi-dash-lg"></i>
+          </button>
+          <input
+              v-model="myQty"
+              :disabled="props.isBtnDisabled || !props.isRemovable"
+              type="number"
+              class="form-control text-center"
+              placeholder="1"
+              min="1"
+              @change="updateItem()"
+          />
+          <button :disabled="props.isBtnDisabled || !props.isRemovable"
+          v-if="props.isRemovable"
+          class="btn btn-sm btn-secondary border-0" type="button" @click="addItem()">
+              <i class="bi bi-plus-lg"></i>
+          </button>
+        </div>
+        <a href="#" class="my-auto link-dark ms-1" @click.prevent="deleteItem()" v-if="props.isRemovable" :disabled="props.isBtnDisabled">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="32"
-            height="32"
+            width="24"
+            height="24"
             fill="currentColor"
             class="bi bi-trash"
             viewBox="0 0 16 16"
@@ -39,6 +55,7 @@
             />
           </svg>
         </a>
+        </div>
       </div>
     </div>
     <hr />
@@ -46,7 +63,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import { delFloat } from '@/api/math.js'
 import { notify } from '@/api/toast.js'
 
@@ -56,26 +73,48 @@ const deleteItem = () => {
   emits('deleteItem', props.cart)
   isLoading.value = true
 }
+const add = ref(false)
 const updateItem = () => {
-  if (myQty.value < 0) {
+  if (myQty.value < 1) {
     notify(false, '數量不得小於1')
     myQty.value = props.cart.qty
   } else {
-    const cart = {
+    const renewData = {
       data: {
         product_id: props.cart.product.id,
         qty: myQty.value
       }
     }
-    emits('updateItem', props.cart.id, cart)
+    emits('updateItem', props.cart, renewData, add.value)
   }
 }
-const myQty = ref(props.cart.qty)
+const addItem = () => {
+  myQty.value++
+  add.value = true
+  updateItem()
+}
+const removeItem = () => {
+  myQty.value--
+  add.value = false
+  updateItem()
+}
+const myQty = ref(0)
 watch(() => props.isBtnDisabled, () => {
   if (!props.isBtnDisabled) isLoading.value = false
 })
 watch(() => props.cart, () => {
   myQty.value = props.cart.qty
 })
+onMounted(() => {
+  myQty.value = props.cart.qty
+})
 const isLoading = ref(false)
 </script>
+
+<style scoped>
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+</style>

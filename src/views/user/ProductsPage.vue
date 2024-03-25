@@ -64,6 +64,7 @@ import { ref, onMounted } from 'vue'
 import ProductCard from '@/components/ProductCard.vue'
 import BottomPagination from '@/components/BottomPagination.vue'
 import api from '@/api/axios'
+import { notify } from '@/api/toast'
 
 export default {
   components: { ProductCard, BottomPagination },
@@ -78,7 +79,6 @@ export default {
     const category = ref(route.query.category ? route.query.category : '全部')
     const changeCategory = (item) => {
       category.value = item
-      // console.log(category.value)
       if (item === '全部') getProducts(1)
       else getProducts(1, category.value)
       router.push(`/products?category=${item}`)
@@ -93,7 +93,7 @@ export default {
           isLoading.value = false
         })
         .catch((err) => {
-          console.log(err)
+          notify(false, err.response.data.message)
           isLoading.value = false
         })
     }

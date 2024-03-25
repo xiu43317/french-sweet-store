@@ -5,6 +5,7 @@
       <div class="frame mx-auto">
         <img src="https://www.alucare.fr/wp-content/uploads/2023/01/emoji-visage-qui-pleure.png"
         class="img-fluid img-thumbnai"
+        alt="查無此頁面"
         >
       </div>
         <h1>404</h1>

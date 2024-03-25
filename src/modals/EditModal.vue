@@ -29,6 +29,7 @@
                   <h3 class="mb-3">主要圖片</h3>
                   <label for="imageUrl" class="form-label">輸入圖片網址</label>
                   <input
+                    id="imageUrl"
                     type="text"
                     class="form-control"
                     placeholder="請輸入圖片連結"
@@ -39,7 +40,7 @@
                   <label for="formFile" class="form-label">上傳檔案</label>
                   <input class="form-control" type="file" id="formFile" ref="formFile" @change="uploadFile()"/>
                 </div>
-                <img class="img-fluid" :src="product.imageUrl" />
+                <img class="img-fluid" :src="product.imageUrl" :alt="product.title"/>
               </div>
               <h3 class="mb-3">多圖新增</h3>
               <div v-if="Array.isArray(product.imagesUrl)">
@@ -48,10 +49,11 @@
                   :key="key"
                 >
                   <div class="mb-3">
-                    <label for="imageUrl" class="form-label"
+                    <label for="imagesUrl" class="form-label"
                       >輸入圖片網址</label
                     >
                     <input
+                      id="imagesUrl"
                       type="text"
                       class="form-control"
                       placeholder="請輸入圖片連結"
@@ -59,13 +61,14 @@
                     />
                   </div>
                   <div class="mb-3">
-                    <label for="formFile" class="form-label">上傳檔案</label>
+                    <label for="formFiles" class="form-label">上傳檔案</label>
                     <input
+                      id="formFiles"
                       class="form-control uploadImages"
                       type="file"
                       @change="uploadFiles(key)"
                     />
-                    <img class="img-fluid" :src="product.imagesUrl[key]" />
+                    <img class="img-fluid" :src="product.imagesUrl[key]" alt="相關產品"/>
                   </div>
                 </template>
                 <div
@@ -75,6 +78,7 @@
                   "
                 >
                   <button
+                    type="button"
                     class="btn btn-outline-primary btn-sm d-block w-100"
                     @click="product.imagesUrl.push('')"
                   >
@@ -83,6 +87,7 @@
                 </div>
                 <div v-else>
                   <button
+                    type="button"
                     class="btn btn-outline-danger btn-sm d-block w-100"
                     @click="product.imagesUrl.pop()"
                   >
@@ -92,6 +97,7 @@
               </div>
               <div v-else>
                 <button
+                  type="button"
                   class="btn btn-outline-primary btn-sm d-block w-100"
                   @click="createImages()"
                 >
@@ -123,7 +129,7 @@
                   />
                 </div>
                 <div class="mb-3 col-md-6">
-                  <label for="price" class="form-label">單位</label>
+                  <label for="unit" class="form-label">單位</label>
                   <input
                     id="unit"
                     type="text"
@@ -174,7 +180,7 @@
               <div class="mb-3">
                 <label for="content" class="form-label">說明內容</label>
                 <textarea
-                  id="description"
+                  id="content"
                   type="text"
                   class="form-control"
                   placeholder="請輸入說明內容"
@@ -209,7 +215,7 @@
                   >
                 </div>
                 <div class="mb-3 col-md-6 row">
-                  <label for="price" class="col-sm-3 col-form-label"
+                  <label for="stars" class="col-sm-3 col-form-label"
                     >推薦度</label
                   >
                   <div class="col-sm-5 mt-1">
@@ -325,6 +331,7 @@ export default {
         .post(`${url}/api/${path}/admin/upload`, formData)
         .then((res) => {
           product.value.imageUrl = res.data.imageUrl
+          formFile.value.value = ''
         })
         .catch((err) => {
           alert(err.response.data.message)

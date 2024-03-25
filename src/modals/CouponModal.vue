@@ -32,7 +32,7 @@
         </div>
         <div class="mb-3">
             <label for="price">折扣百分比</label>
-            <input type="number" class="form-control" id="price" placeholder="請輸入折扣百分比" v-model.number="tempCoupon.percent" min="1">
+            <input type="number" class="form-control" id="price" placeholder="請輸入折扣百分比" v-model.number="tempCoupon.percent" min="1" max="100">
         </div>
         <div class="mb-3">
           <div class="form-check">
@@ -76,6 +76,7 @@ export default {
     }
     const updateCoupon = () => {
       if (tempCoupon.value.percent < 1) alert('折扣百分比不得小於1')
+      else if (tempCoupon.value.percent > 100) alert('折扣百分比不得大於100')
       else ctx.emit('update', tempCoupon.value)
     }
     onMounted(() => {
@@ -104,46 +105,5 @@ export default {
       updateCoupon
     }
   }
-  /*
-  data () {
-    return {
-      couponModal: '',
-      tempCoupon: {},
-      due_date: '',
-      is_newCoupon: false
-    }
-  },
-  props: ['coupon', 'isNew'],
-  methods: {
-    openModal () {
-      this.couponModal.show()
-    },
-    closeModal () {
-      this.couponModal.hide()
-    },
-    updateCoupon () {
-      this.$emit('update', this.tempCoupon)
-    }
-  },
-  mounted () {
-    this.couponModal = new Modal(this.$refs.modal, {
-      keyboard: false
-    })
-  },
-  watch: {
-    coupon () {
-      this.tempCoupon = { ...this.coupon }
-      this.tempCoupon.due_date = this.tempCoupon.due_date * 1000
-      const dateAndTime = new Date(this.tempCoupon.due_date).toISOString().split('T')
-      this.due_date = dateAndTime[0]
-    },
-    due_date () {
-      this.tempCoupon.due_date = Math.floor(new Date(this.due_date))
-    },
-    isNew () {
-      this.is_newCoupon = this.isNew
-    }
-  }
-  */
 }
 </script>

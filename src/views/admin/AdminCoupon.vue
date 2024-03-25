@@ -161,7 +161,6 @@ export default {
             getCoupons()
           })
           .catch((err) => {
-            console.log(err)
             alert(err.message)
           })
       } else {

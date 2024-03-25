@@ -1,5 +1,5 @@
 <template>
-  <myLoading :active="isCartLoading"></myLoading>
+  <myLoading :active="isCartLoading && cartLoading"></myLoading>
   <FlowChart :outProgress="0"/>
   <div class="container my-4">
     <div class="my-5 row justify-content-center">
@@ -10,7 +10,7 @@
           <p class="fs-4 fw-bold">你的購物車現在沒東西喔!</p>
           <router-link to="/products" class="btn btn-lg btn-success">選購商品</router-link>
         </div>
-        <ProductOrderCard v-for="item in cart.carts" :key="item.id" :cart="item"/>
+        <ProductOrderCard v-for="item in cart.carts" :key="item.id" :cart="item" @deleteOneItem="deleteItem"/>
         <div class="row">
           <div class="col-md-6 my-3">
             <div class="input-group my-auto">
@@ -39,7 +39,7 @@
             <span class="fs-4 fw-bold col-md-12 col-6 col-7 text-end my-auto order-md-1 order-2" v-else>總計：NT$ {{ cart.total }}</span>
               <div class="col-md-12 col-5 mt-md-4 text-md-end order-lg-2 order-1 my-auto">
                 <button type="button" class="btn btn-outline-success" @click="clearCart()" :disabled="addBtnState || !cart.total">
-                  <font-awesome-icon icon="spinner" class="fa-spin" v-show="cartLoading"/>
+                  <font-awesome-icon icon="spinner" class="fa-spin" v-show="isClearCart"/>
                   清空購物車
                 </button>
               </div>
@@ -52,13 +52,13 @@
       <div class="col-lg-6">
         <h4 class="text-center">訂購人資訊</h4>
         <hr />
-        <v-form @submit="goToPayment()"
+        <VForm @submit="goToPayment()"
         class="bg-light p-3 rounded" ref="form" v-slot="{ errors }">
           <div class="mb-3">
             <label for="email" class="form-label">
               <span class="text-danger">*</span>
               Email</label>
-            <v-field
+            <VField
               id="email"
               name="email"
               type="email"
@@ -67,18 +67,18 @@
               placeholder="請輸入 Email"
               rules="email|required"
               v-model="user.email"
-            ></v-field>
-            <error-message
+            />
+            <ErrorMessage
               name="email"
               class="invalid-feedback"
-            ></error-message>
+            />
           </div>
 
           <div class="mb-3">
             <label for="name" class="form-label">
               <span class="text-danger">*</span>
               收件人姓名</label>
-            <v-field
+            <VField
               id="name"
               name="姓名"
               type="text"
@@ -87,15 +87,16 @@
               placeholder="請輸入姓名"
               rules="required"
               v-model="user.name"
-            ></v-field>
-            <error-message name="姓名" class="invalid-feedback"></error-message>
+            />
+            <ErrorMessage name="姓名" class="invalid-feedback"
+            />
           </div>
 
           <div class="mb-3">
             <label for="tel" class="form-label">
               <span class="text-danger">*</span>
               收件人電話</label>
-            <v-field
+            <VField
               id="tel"
               name="電話"
               type="text"
@@ -104,15 +105,16 @@
               placeholder="請輸入電話"
               :rules="isPhone"
               v-model="user.tel"
-            ></v-field>
-            <error-message name="電話" class="invalid-feedback"></error-message>
+            />
+            <ErrorMessage name="電話" class="invalid-feedback"
+            />
           </div>
 
           <div class="mb-3">
             <label for="address" class="form-label">
               <span class="text-danger">*</span>
               收件人地址</label>
-            <v-field
+            <VField
               id="address"
               name="地址"
               type="text"
@@ -121,8 +123,9 @@
               placeholder="請輸入地址"
               rules="required"
               v-model="user.address"
-            ></v-field>
-            <error-message name="地址" class="invalid-feedback"></error-message>
+            />
+            <ErrorMessage name="地址" class="invalid-feedback"
+            />
           </div>
 
           <div class="mb-3">
@@ -140,7 +143,7 @@
               送出訂單
             </button>
           </div>
-        </v-form>
+        </VForm>
       </div>
     </div>
   </div>
@@ -163,8 +166,9 @@ export default {
   setup () {
     const cartStore = useCartStore()
     const cartLoading = ref(false)
+    const isClearCart = ref(false)
     const { cart, addBtnState, isCartLoading } = storeToRefs(cartStore)
-    const { getCart, deleteAllCart, useCoupon, changeAddStatus } = cartStore
+    const { getCart, deleteCart, deleteAllCart, useCoupon, changeAddStatus } = cartStore
     const useMyCoupon = async () => {
       changeAddStatus(true)
       const coupon = {
@@ -174,12 +178,17 @@ export default {
       }
       await useCoupon(coupon)
         .then((res) => {
+          cartLoading.value = false
           Swal.fire({
             icon: 'success',
             title: res.data.message
           })
-            .then((result) => {
-              if (result.isConfirmed) getCart()
+            .then(async (result) => {
+              if (result.isConfirmed) {
+                cartLoading.value = true
+                await getCart()
+                cartLoading.value = false
+              }
             })
         })
         .catch((err) => {
@@ -201,17 +210,22 @@ export default {
       }).then(async (result) => {
         if (result.isConfirmed) {
           changeAddStatus(true)
-          cartLoading.value = true
+          isClearCart.value = true
           await deleteAllCart()
             .then((res) => {
-              cartLoading.value = false
+              changeAddStatus(false)
+              isClearCart.value = false
               Swal.fire({
                 title: '刪除成功',
                 text: `全部${res.data.message}`,
                 icon: 'success'
               })
-                .then((res) => {
-                  if (res.isConfirmed) getCart()
+                .then(async (res) => {
+                  if (res.isConfirmed) {
+                    cartLoading.value = true
+                    await getCart()
+                    cartLoading.value = false
+                  }
                 })
             })
             .catch((err) => {
@@ -222,9 +236,53 @@ export default {
                 icon: 'error'
               })
             })
-          changeAddStatus(false)
         } else if (result.isDenied) {
           notify(false, '動作取消')
+        }
+      })
+    }
+    const deleteItem = async (cart) => {
+      Swal.fire({
+        icon: 'warning', // error\warning\info\question
+        title: `確定刪除${cart.product.title}`,
+        text: '刪除後的資料無法恢復',
+        showCancelButton: true,
+        reverseButtons: true,
+        confirmButtonColor: 'red',
+        cancelButtonColor: 'gray',
+        confirmButtonText: '確定',
+        cancelButtonText: '取消'
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          changeAddStatus(true)
+          await deleteCart(cart.id)
+            .then((res) => {
+              changeAddStatus(false)
+              Swal.fire({
+                title: '刪除成功',
+                text: `${cart.product.title}${res.data.message}`,
+                icon: 'success'
+              })
+                .then(async (result) => {
+                  cartLoading.value = true
+                  if (result.isConfirmed) {
+                    await getCart()
+                    cartLoading.value = false
+                  }
+                })
+            })
+            .catch((err) => {
+              cartLoading.value = false
+              changeAddStatus(false)
+              Swal.fire({
+                title: '刪除失敗',
+                text: `${err.response.data.message}`,
+                icon: 'error'
+              })
+            })
+        } else if (result.isDenied) {
+          notify(false, '動作取消')
+          changeAddStatus(false)
         }
       })
     }
@@ -264,6 +322,7 @@ export default {
       cart,
       cartLoading,
       isCartLoading,
+      isClearCart,
       addBtnState,
       changeAddStatus,
       cartStore,
@@ -273,6 +332,7 @@ export default {
       user,
       goToPayment,
       clearCart,
+      deleteItem,
       useMyCoupon,
       delFloat
     }

@@ -61,7 +61,7 @@
       </tbody>
     </table>
     <!-- openModal -->
-    <EditProduct
+    <EditModal
       :is-new="isNew"
       :temp-product="tempProduct"
       :current-page="currentPage"
@@ -69,7 +69,7 @@
       ref="productModal"
     />
     <!-- deleteModal -->
-    <DeleteProduct
+    <DeleteModal
       :product="tempProduct"
       @delete-item="deleteProduct"
       ref="delProductModal"
@@ -84,8 +84,8 @@
 </template>
 
 <script>
-import EditProduct from '@/modals/Editmodal.vue'
-import DeleteProduct from '@/modals/DeleteModal.vue'
+import EditModal from '@/modals/EditModal.vue'
+import DeleteModal from '@/modals/DeleteModal.vue'
 import BottomPagination from '@/components/BottomPagination.vue'
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
@@ -93,8 +93,8 @@ import axios from 'axios'
 const url = import.meta.env.VITE_APP_API_URL
 const path = import.meta.env.VITE_APP_API_NAME
 export default {
-  components: { EditProduct, DeleteProduct, BottomPagination },
-  setup (props) {
+  components: { EditModal, DeleteModal, BottomPagination },
+  setup () {
     const tempProduct = ref({
       imagesUrl: []
     })
@@ -110,14 +110,13 @@ export default {
       axios
         .get(`${url}/api/${path}/admin/products?page=${page}`)
         .then((res) => {
-          // console.log(res.data.products);
           products.value = res.data.products
           pages.value = res.data.pagination
           currentPage.value = page
           isLoading.value = false
         })
         .catch((error) => {
-          console.dir(error)
+          alert(error.response.data.message)
           isLoading.value = false
         })
     }

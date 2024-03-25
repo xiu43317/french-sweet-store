@@ -136,7 +136,8 @@
             請在這段時間內前來品嚐我們的美味甜點，讓您的下午或晚上變得更加美好。期待您的光臨！
           </div>
         </div>
-      </div>      <div class="accordion-item">
+      </div>
+      <div class="accordion-item">
         <h2 class="accordion-header" id="headingSix">
           <button
             class="accordion-button collapsed"
@@ -163,7 +164,6 @@
           </div>
         </div>
       </div>
-
     </div>
   </div>
 </template>

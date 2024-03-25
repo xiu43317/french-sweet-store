@@ -69,7 +69,7 @@
         </tr>
       </tbody>
     </table>
-    <button @click="payOrder" class="btn btn-lg btn-secondary w-100" v-if="!userOrder.is_paid">確認付款</button>
+    <button type="button" @click="payOrder" class="btn btn-lg btn-secondary w-100" v-if="!userOrder.is_paid">確認付款</button>
   </div>
 </template>
 

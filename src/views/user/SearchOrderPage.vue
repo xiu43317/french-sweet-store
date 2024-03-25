@@ -19,7 +19,7 @@
   </div>
   <OrderDetail :order="order"/>
   <div class="contaner text-center">
-    <button @click="redoSearch()" class="btn btn-lg btn-outline-success" v-if="hideSearchBar">重新查詢</button>
+    <button type="button" @click="redoSearch()" class="btn btn-lg btn-outline-success" v-if="hideSearchBar">重新查詢</button>
   </div>
 </template>
 

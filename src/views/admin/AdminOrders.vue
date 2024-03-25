@@ -120,7 +120,7 @@ export default {
           isLoading.value = false
         })
         .catch((err) => {
-          console.log(err.response.data.message)
+          alert(err.response.data.message)
           isLoading.value = false
         })
     }
@@ -146,7 +146,6 @@ export default {
           getOrders()
         })
         .catch((err) => {
-          console.log(err)
           alert(err.response.data.message)
           isToggling.value = false
           orderModal.value.closeModal()

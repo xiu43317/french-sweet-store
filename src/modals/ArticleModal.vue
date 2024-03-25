@@ -37,7 +37,7 @@
               </div>
               <div class="mb-3">
                 <img :src="tempArticle.imageUrl"
-                     alt=""
+                     :alt="tempArticle.title"
                      class="img-fluid object-fit-cover">
                 <label for="image" class="form-label">輸入圖片網址</label>
                 <input

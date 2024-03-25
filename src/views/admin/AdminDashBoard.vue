@@ -27,7 +27,7 @@
       </div>
     </div>
   </nav>
-  <router-view v-if="checkSuccess"></router-view>
+  <RouterView v-if="checkSuccess"/>
 </template>
 
 <script>
@@ -49,7 +49,6 @@ export default {
           checkSuccess.value = true
         })
         .catch((error) => {
-          console.dir(error)
           alert(error.response.data.message)
           router.push('/login')
         })
@@ -62,7 +61,7 @@ export default {
           router.push('/login')
         })
         .catch((err) => {
-          console.log(err)
+          alert(err.response.data.message)
         })
     }
     onMounted(() => {

@@ -58,8 +58,6 @@ const getPages = () => {
     api.getArticles(1)
       .then((res) => {
         prevPageId.value = res.data.articles.filter(item => item.num === num + 1)[0]
-        // console.log('prev', prevPageId.value.id)
-        // console.log('prevNum', prevPageId.value.num)
       })
       .catch((err) => {
         notify(err.response.data.message)

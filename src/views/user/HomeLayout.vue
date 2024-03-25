@@ -65,7 +65,7 @@
     </div>
   </nav>
   <!-- 變動的內容 -->
-  <router-view></router-view>
+  <RouterView/>
   <!-- 底部Banner -->
   <BottomBanner/>
   <div class="container-fluid py-5 bg-light h-100">
@@ -168,6 +168,9 @@ export default {
         cancelButtonText: '取消'
       }).then(async (result) => {
         if (result.isConfirmed) {
+          isLoading.value = true
+          clearButtoonDisable.value = true
+          isBtnDisabled.value = true
           await deleteAllCart()
             .then((res) => {
               Swal.fire({
@@ -183,10 +186,9 @@ export default {
                 icon: 'error'
               })
             })
-          isLoading.value = true
-          clearButtoonDisable.value = true
           await getCart()
           isLoading.value = false
+          isBtnDisabled.value = false
           clearButtoonDisable.value = false
         } else if (result.isDenied) {
           notify(false, '動作取消')
@@ -231,11 +233,12 @@ export default {
         }
       })
     }
-    const updateItem = (id, cart) => {
+    const updateItem = (cart, renewData, add) => {
       isBtnDisabled.value = true
-      updateCart(id, cart)
-        .then((res) => {
-          notify(true, res.data.message)
+      updateCart(cart.id, renewData)
+        .then(() => {
+          if (add === true) notify(true, `${cart.product.title}已加入`)
+          else notify(true, `${cart.product.title}已移除`)
           isBtnDisabled.value = false
           getCart()
         })
