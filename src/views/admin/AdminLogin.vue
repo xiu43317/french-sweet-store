@@ -79,37 +79,6 @@ export default {
       login
     }
   }
-/*
-  data () {
-    return {
-      emailInput: '',
-      pwInput: ''
-    }
-  },
-  methods: {
-    login () {
-      const username = this.emailInput
-      const password = this.pwInput
-      const user = {
-        username,
-        password
-      }
-      // #2 發送 API 至遠端並登入（並儲存 Token）
-      const url = import.meta.env.VITE_APP_API_URL
-      axios.post(`${url}/admin/signin`, user).then((res) => {
-        const {
-          token,
-          expired
-        } = res.data
-        document.cookie = `hexToken=${token};expires=${new Date(expired)};`
-        alert(res.data.message)
-        this.$router.push('/admin/products')
-      }).catch((error) => {
-        alert(error.response.data.message)
-      })
-    }
-  }
-*/
 }
 </script>
 

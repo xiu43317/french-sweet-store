@@ -48,6 +48,7 @@ export default {
               .then(() => {
                 Swal.fire({
                   icon: 'success',
+                  confirmButtonColor: 'green',
                   title: '複製成功'
                 })
               })

@@ -99,10 +99,6 @@ export default {
     }
     const goToDetail = (product) => {
       router.push(`/product/${product.id}`)
-      // tempProduct.value = product
-      // setTimeout(() => {
-      //   modal.value.openModal()
-      // }, 500)
     }
     onMounted(() => {
       if (category.value === '全部') getProducts(1)

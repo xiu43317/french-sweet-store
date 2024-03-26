@@ -18,7 +18,7 @@
       </div>
       <div class=" d-flex">
         <div class="input-group mb-3" style="max-width: 150px; max-height: 20px;">
-            <button :disabled="addBtnState" class="fs-4 btn btn-sm btn-secondary border-0" type="button" @click="minusQty()">
+            <button :disabled="addBtnState || qty === 1" class="fs-4 btn btn-sm btn-secondary border-0" type="button" @click="minusQty()">
               <i class="bi bi-dash-lg"></i>
             </button>
             <input
@@ -123,7 +123,6 @@ export default {
       changeAddStatus(true)
       qty.value -= 1
       if (qty.value < 1) {
-        notify(false, '數量不得小於1')
         qty.value = props.cart.qty
         changeAddStatus(false)
         return

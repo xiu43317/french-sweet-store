@@ -18,7 +18,7 @@
         <div class="d-flex align-items-center">
           <span v-if="!props.isRemovable" class="fs-5">數量：</span>
           <div class="input-group" style="max-width: 100px;">
-          <button :disabled="props.isBtnDisabled || !props.isRemovable"
+          <button :disabled="props.isBtnDisabled || !props.isRemovable || myQty === 1"
           v-if="props.isRemovable"
           class="btn btn-sm btn-secondary border-0" type="button" @click="removeItem()">
               <i class="bi bi-dash-lg"></i>

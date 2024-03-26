@@ -175,6 +175,7 @@ export default {
             .then((res) => {
               Swal.fire({
                 title: '刪除成功',
+                confirmButtonColor: 'green',
                 text: `全部${res.data.message}`,
                 icon: 'success'
               })
@@ -214,6 +215,7 @@ export default {
             .then((res) => {
               Swal.fire({
                 title: '刪除成功',
+                confirmButtonColor: 'green',
                 text: `${cart.product.title}${res.data.message}`,
                 icon: 'success'
               })
